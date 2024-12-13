@@ -47,7 +47,6 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(new Uint8Array(8))
-  const [mostVoted, setMostvoted] = useState(0)
 
   return (
     <div>
