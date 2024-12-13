@@ -10,6 +10,13 @@ const randomAnecdote = (setSelected, anecdotes) => {
   console.log(randomInt)
 }
 
+const vote = (votes, setVotes, selected) => {
+  const copy = [... votes]
+  copy[selected] += 1
+  setVotes(copy)
+  console.log(copy)
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -23,11 +30,13 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Uint8Array(8))
 
   return (
     <div>
       {anecdotes[selected]}
       <br />
+      <Button handleClick={() => vote(votes, setVotes, selected)} text="vote" />
       <Button handleClick={() => randomAnecdote(setSelected, anecdotes)} text="next anecdote" />
     </div>
   )
