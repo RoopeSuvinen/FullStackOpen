@@ -9,6 +9,12 @@ const Button = (props) => {
 }
 
 const Statistics = ({good, neutral, bad}) => {
+  if (good === 0 && neutral === 0 && bad  === 0) {
+    return (
+      <p>No feedback given</p>
+    )
+  }
+  
   const total = good + neutral + bad
   const average = total > 0 ? (good - bad) / total : 0
   const positivePercentage = total > 0 ? (good / total) * 100 : 0
