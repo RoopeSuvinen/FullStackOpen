@@ -2,12 +2,16 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-1233883' }
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ])
 
-  // Hooks for setting states for name and number inputs
+  // Hooks for setting states for name/number inputs and filtering names.
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [filter, setFilter] = useState('')
 
 /**
  * Event handler for adding a new name to a phonebook. Checks if
@@ -32,9 +36,13 @@ const addName = (event) => {
 }
 
 /**
- * Event handler for changes in the text input field.
- * @param {*} event 
+ * Component for filtering phonebook names. Case-insensitive.
  */
+const filterNames = persons.filter(person =>
+  person.name.toLowerCase().includes(filter.toLowerCase())
+)
+
+// All event handlers for inputs and filters.
 const handleAddName = (event) => {
   console.log(event.target.value)
   setNewName(event.target.value)
@@ -45,9 +53,20 @@ const handleAddNumber = (event) => {
   setNewNumber(event.target.value)
 }
 
+const handleFilterChange = (event) => {
+  setFilter(event.target.value)
+}
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <form>
+        <div>
+        filter shown with
+        <input value={filter} onChange={handleFilterChange}/> 
+        </div>
+      </form>
+      <h2>add a new</h2>
       <form onSubmit={addName}>
         <div>
           name: 
@@ -60,7 +79,7 @@ const handleAddNumber = (event) => {
       </form>
       <h2>Numbers</h2>
       <ul>
-        {persons.map(person =>
+        {filterNames.map(person =>
           <li key={person.name}> {person.name} {person.number}</li>
         )}
       </ul>
