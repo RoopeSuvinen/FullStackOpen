@@ -6,16 +6,30 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('')
 
+/**
+ * Event handler for adding a new name to a phonebook. Checks if
+ * name is already added.
+ * @param {*} event 
+ * @returns 
+ */
 const addName = (event) => {
   event.preventDefault() // Prevents loading page again.
+  if (persons.some(person => person.name === newName)) {
+    alert(`${newName} is already added to phonebook`)
+    return
+  }
   const nameObject = {
     name: newName
   }
 
   setPersons(persons.concat(nameObject))
-  setNewName('')
+  setNewName('') // Clear input after adding a name
 }
 
+/**
+ * Event handler for changes in the text input field.
+ * @param {*} event 
+ */
 const handleAddName = (event) => {
   console.log(event.target.value)
   setNewName(event.target.value)
