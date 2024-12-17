@@ -35,8 +35,8 @@ const handleAddName = (event) => {
       </form>
       <h2>Numbers</h2>
       <ul>
-        {persons.map((person, index) =>
-          <li key={index}>{person.name}</li>
+        {persons.map(person =>
+          <li key={person.name}>{person.name}</li>
         )}
       </ul>
     </div>
