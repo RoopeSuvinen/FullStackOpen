@@ -70,12 +70,17 @@ const addName = (event) => {
   }
   const nameObject = {
     name: newName,
-    number: newNumber
+    number: newNumber,
+    id: String(persons.length + 1 )
   }
 
-  setPersons(persons.concat(nameObject))
-  setNewName('') // Clear input
-  setNewNumber('') // Clear input
+  axios
+  .post('http://localhost:3001/persons', nameObject)
+  .then(response => {
+    setPersons(persons.concat(nameObject))
+    setNewName('') // Clear input
+    setNewNumber('') // Clear input
+  })
 }
 
 /**
