@@ -26,12 +26,12 @@ const PersonForm = ({onSubmit, newName, newNumber, handleAddName, handleAddNumbe
   )
 }
 
-const Persons = ({ persons }) => {
+const Persons = ({ persons, onDelete }) => {
   return (
     <ul>
       {persons.map((person) => (
         <li key={person.name}>
-          {person.name} {person.number}
+          {person.name} {person.number} <button onClick={() => onDelete(person.id, person.name)}>delete</button>
         </li>
       ))}
     </ul>
@@ -83,6 +83,16 @@ const addName = (event) => {
   })
 }
 
+const deletePerson = (id, name) => {
+  if (window.confirm(`Delete ${name}`)) {
+    personService
+      .remove(id)
+      .then(response => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
+  }
+}
+
 /**
  * Component for filtering phonebook names. Case-insensitive.
  */
@@ -108,7 +118,7 @@ const handleFilterChange = (event) => setFilter(event.target.value)
         handleAddNumber={handleAddNumber}
       />
       <h2>Numbers</h2>
-      <Persons persons={filterNames} />
+      <Persons persons={filterNames} onDelete={deletePerson} />
     </div>
   )
 }
