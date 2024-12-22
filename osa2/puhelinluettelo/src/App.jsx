@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
+import './index.css'
 
 const Filter = ({ value, onChange }) => {
   return (
@@ -38,6 +39,18 @@ const Persons = ({ persons, onDelete }) => {
   );
 };
 
+const Notification = ({message}) => {
+  if (message === null) {
+    return null;
+  }
+
+  return (
+    <div className="notification">
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
 
   // Hooks for setting states for name/number inputs and filtering names.
@@ -45,6 +58,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [persons, setPersons] = useState([])
+  const [message, setMessage] = useState('')
 
   // Fetching data using Effect hook.
   useEffect(() => {
@@ -76,9 +90,15 @@ const addName = (event) => {
         .then(response => {
           setPersons(persons.map(person => 
             person.id !== existingPerson.id ? person : response.data
-          ));
-          setNewName('');
-          setNewNumber('');
+          ))
+          setMessage(
+            `Updated ${newName}'s number to ${newNumber}`
+          )
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+          setNewName('')
+          setNewNumber('')
         })
     }
     return;
@@ -94,6 +114,12 @@ const addName = (event) => {
   .create(nameObject)
   .then(response => {
     setPersons(persons.concat(response.data))
+    setMessage(
+      `Added ${newName}`
+    )
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
     setNewName('')
     setNewNumber('')
   })
@@ -104,6 +130,12 @@ const deletePerson = (id, name) => {
     personService
       .remove(id)
       .then(response => {
+        setMessage(
+          `Deleted ${name}`
+        )
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
         setPersons(persons.filter(person => person.id !== id))
       })
   }
@@ -124,6 +156,7 @@ const handleFilterChange = (event) => setFilter(event.target.value)
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter value={filter} onChange={handleFilterChange} />
       <h2>Add a new</h2>
       <PersonForm 
