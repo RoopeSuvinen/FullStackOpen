@@ -39,17 +39,23 @@ const Persons = ({ persons, onDelete }) => {
   );
 };
 
-const Notification = ({message}) => {
-  if (message === null) {
+const Notification = ({ message }) => {
+  if (!message || !message.content) {
     return null;
   }
 
-  return (
-    <div className="notification">
-      {message}
-    </div>
-  )
-}
+  const style = {
+    color: message.type === "error" ? "red" : "green",
+    background: "lightgrey",
+    fontSize: "20px",
+    borderStyle: "solid",
+    borderRadius: "5px",
+    padding: "10px",
+    marginBottom: "10px",
+  };
+
+  return <div style={style}>{message.content}</div>;
+};
 
 const App = () => {
 
@@ -58,7 +64,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [persons, setPersons] = useState([])
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState({ content: null, type: "" })
 
   // Fetching data using Effect hook.
   useEffect(() => {
@@ -91,14 +97,20 @@ const addName = (event) => {
           setPersons(persons.map(person => 
             person.id !== existingPerson.id ? person : response.data
           ))
-          setMessage(
-            `Updated ${newName}'s number to ${newNumber}`
-          )
+          setMessage({
+            content: `Updated ${newName}'s number to ${newNumber}`,
+            type: "success"
+          })
           setTimeout(() => {
-            setMessage(null)
+            setMessage({ content: null, type: "" });
           }, 5000)
           setNewName('')
           setNewNumber('')
+        })
+        .catch(error => {
+          setMessage(
+            {content: `Information of ${newName} has already been removed from server`, type: "error"}
+          )
         })
     }
     return;
@@ -114,11 +126,12 @@ const addName = (event) => {
   .create(nameObject)
   .then(response => {
     setPersons(persons.concat(response.data))
-    setMessage(
-      `Added ${newName}`
-    )
+    setMessage({
+      content: `Added ${newName}`,
+      type: "success",
+    })
     setTimeout(() => {
-      setMessage(null)
+      setMessage({content: null, type:""})
     }, 5000)
     setNewName('')
     setNewNumber('')
@@ -130,11 +143,12 @@ const deletePerson = (id, name) => {
     personService
       .remove(id)
       .then(response => {
-        setMessage(
-          `Deleted ${name}`
-        )
+        setMessage({
+          content: `Deleted ${name}`,
+          type: "success"
+        })
         setTimeout(() => {
-          setMessage(null)
+          setMessage({ content: null, type: "" });
         }, 5000)
         setPersons(persons.filter(person => person.id !== id))
       })
