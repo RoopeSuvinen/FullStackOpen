@@ -20,12 +20,12 @@ const Filter = ({ value, onChange }) => {
  * @param {*} param0 
  * @returns 
  */
-const Countries = ({countries}) => {
+const Countries = ({countries, onShowCountry}) => {
   return(
     <ul>
       {countries.map((country) => (
         <li key={country.name.common}>
-          {country.name.common}
+          {country.name.common} <button onClick={() => onShowCountry(country)}>show</button>
         </li>
       )
       )}
@@ -38,7 +38,7 @@ const Countries = ({countries}) => {
  * @param {*} param0 
  * @returns 
  */
-const CountryList = ({ countries, filter }) => {
+const CountryList = ({ countries, filter, onShowCountry }) => {
   if (!filter) {
     return null;
   }
@@ -48,7 +48,7 @@ const CountryList = ({ countries, filter }) => {
   if (countries.length === 1) {
     return <CountryDetails country={countries[0]} />
   }
-  return <Countries countries={countries} />
+  return <Countries countries={countries} onShowCountry={onShowCountry} />
 }
 
 /**
@@ -79,6 +79,7 @@ const CountryDetails = ({country}) => {
 function App() {
   const [countries, setCountries] = useState([])
   const [filter, setFilter] = useState('')
+  const [selectedCountry, setSelectedCountry] = useState(null)
 
   useEffect(() => {
     countryService
@@ -95,13 +96,25 @@ function App() {
     ) // Searching countries with lower cases also. 
   : [];
 
-const handleFilterChange = (event) => setFilter(event.target.value)
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value)
+    setSelectedCountry(null) //Going back to listview if alphabet is deleted from textield.
+  }
+  const handleShowCountry = (country) => setSelectedCountry(country)
 
   return (
     <div>
-      <Filter value={filter} onChange={handleFilterChange} />
-      <CountryList countries={filterCountries} filter={filter} />
-    </div>
+    <Filter value={filter} onChange={handleFilterChange} />
+    {!selectedCountry ? (
+      <CountryList
+        countries={filterCountries}
+        filter={filter}
+        onShowCountry={handleShowCountry} // Lähetetään "show"-painikkeen toiminto
+      />
+    ) : (
+      <CountryDetails country={selectedCountry} />
+    )}
+  </div>
   )
 }
 
