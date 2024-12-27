@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import personService from './services/persons'
 import './index.css'
 
@@ -8,8 +7,8 @@ const Filter = ({ value, onChange }) => {
     <div>
       filter shown with <input value={value} onChange={onChange} />
     </div>
-  );
-};
+  )
+}
 
 const PersonForm = ({onSubmit, newName, newNumber, handleAddName, handleAddNumber}) => {
   return (
@@ -36,8 +35,8 @@ const Persons = ({ persons, onDelete }) => {
         </li>
       ))}
     </ul>
-  );
-};
+  )
+}
 
 const Notification = ({ message }) => {
   if (!message || !message.content) {
