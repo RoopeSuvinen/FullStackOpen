@@ -52,11 +52,22 @@ const CountryList = ({ countries, filter, onShowCountry }) => {
 }
 
 /**
- * Component for handling country details.
+ * Component for handling country and weather info. API key is from https://openweathermap.org/ 
  * @param {*} param0 
  * @returns 
  */
 const CountryDetails = ({country}) => {
+  const [latitude, longitude] = country.capitalInfo.latlng
+  const [weather, setWeather] = useState(null)
+  const api_key = import.meta.env.VITE_SOME_KEY
+
+  useEffect(() => {
+    countryService
+      .getWeather(latitude, longitude, api_key)
+      .then(response => {
+        setWeather(response.data.current)
+      })
+  }, [latitude, longitude, api_key])
 
   return (
     <div>
@@ -66,12 +77,23 @@ const CountryDetails = ({country}) => {
       <p>Area {country.area}</p>
       </div>
       <p><strong>Languages:</strong></p>
-      <ul>
+      <ul className="languages-list">
         {Object.values(country.languages).map((language) => (
           <li key={language}>{language}</li>
         ))}
       </ul>
       <img src={country.flags.png} alt={`Flag`} style={{ maxWidth: "150px"}}/ >
+      <br />
+      <h2>Weather in {country.capital}</h2>
+      {weather ? (
+        <div>
+          <p>Temperature: {weather.temp}°C</p>
+          <img src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt="Weather icon" />
+          <p>Wind: {weather.wind_speed} m/s</p>
+        </div>
+      ) : (
+        <p>Cannot fetch weather data</p>
+      )}
     </div>
   )
 }
@@ -109,7 +131,7 @@ function App() {
       <CountryList
         countries={filterCountries}
         filter={filter}
-        onShowCountry={handleShowCountry} // Lähetetään "show"-painikkeen toiminto
+        onShowCountry={handleShowCountry}
       />
     ) : (
       <CountryDetails country={selectedCountry} />
