@@ -1,0 +1,17 @@
+{
+  "name": "puhelinluettelo-backend",
+  "version": "1.0.0",
+  "description": "Backend side for puhelinluettelo app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Roope Suvinen",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemon": "^3.1.9"
+  }
+}
