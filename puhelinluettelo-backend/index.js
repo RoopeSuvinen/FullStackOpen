@@ -24,8 +24,23 @@ let persons = [
       }
 ]
 
+// This route returns list of all persons
 app.get('/api/persons', (request, response) => {
   response.json(persons)
+})
+
+// This roude returns info of how many persons in list and response time.
+app.get('/info', (request, response) => {
+    const personCount = persons.length
+    const responseTime = new Date()
+
+    const infoText = 
+    `<div>
+      <p>Phonebook has info for ${personCount} people</p>
+      <p>${responseTime}</p>
+    </div>`
+
+    response.send(infoText)
 })
 
 const PORT = 3001
