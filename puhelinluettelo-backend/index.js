@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+app.use(express.json())
 
 let persons = [
       {
@@ -43,7 +44,7 @@ app.get('/info', (request, response) => {
     response.send(infoText)
 })
 
-// This route gets info of certain person with certain id. 
+// Gets info of certain person with certain id. 
 app.get('/api/persons/:id', (request, response) => {
   const id = request.params.id // Id is string, not number.
   const person = persons.find(person => person.id === id)
@@ -55,12 +56,32 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
-
+// Deletes person from list.
 app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id
   persons = persons.filter(person => person.id !== id)
 
   response.status(204).end()
+})
+
+// Adds new entry in persons -list. Randomizes the id. 
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: 'Person information missing'
+    })
+  }
+
+  const person = {
+    id: String(Math.floor(Math.random() * 1000000000)),
+    name: body.name,
+    number: body.number
+  }
+
+  console.log(person)
+  response.json(person)
 })
 
 const PORT = 3001
