@@ -67,11 +67,14 @@ const App = () => {
 
   // Fetching data using Effect hook.
   useEffect(() => {
-    console.log('effect')
+    console.log('effect');
     personService
       .getAll()
-      .then(response => {
-        setPersons(response.data)
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
+      .catch(error => {
+        console.error('Error fetching persons:', error)
       })
   }, [])
 
@@ -124,7 +127,7 @@ const addName = (event) => {
   personService
   .create(nameObject)
   .then(response => {
-    setPersons(persons.concat(response.data))
+    setPersons(persons.concat(response))
     setMessage({
       content: `Added ${newName}`,
       type: "success",
