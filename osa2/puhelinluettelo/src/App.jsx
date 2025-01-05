@@ -71,6 +71,7 @@ const App = () => {
     personService
       .getAll()
       .then(initialPersons => {
+        console.log(initialPersons)
         setPersons(initialPersons)
       })
       .catch(error => {
@@ -87,58 +88,65 @@ const App = () => {
 const addName = (event) => {
   event.preventDefault();
 
-  const existingPerson = persons.find(person => person.name === newName);
+  const existingPerson = persons.find((person) => person.name === newName);
 
   if (existingPerson) {
     if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
       const updatedPerson = { ...existingPerson, number: newNumber };
-      
+
       personService
         .update(existingPerson.id, updatedPerson)
-        .then(response => {
-          setPersons(persons.map(person => 
-            person.id !== existingPerson.id ? person : response.data
-          ))
+        .then((updated) => {
+          setPersons(persons.map((person) => (person.id !== existingPerson.id ? person : updated)));
           setMessage({
             content: `Updated ${newName}'s number to ${newNumber}`,
-            type: "success"
-          })
+            type: "success",
+          });
           setTimeout(() => {
             setMessage({ content: null, type: "" });
-          }, 5000)
-          setNewName('')
-          setNewNumber('')
+          }, 5000);
+          setNewName("");
+          setNewNumber("");
         })
-        .catch(error => {
-          setMessage(
-            {content: `Information of ${newName} has already been removed from server`, type: "error"}
-          )
-        })
+        .catch((error) => {
+          setMessage({
+            content: `Information of ${newName} has already been removed from server`,
+            type: "error",
+          });
+        });
     }
     return;
   }
 
   const nameObject = {
+    id: String(Math.floor(Math.random() * 1000000000)),
     name: newName,
     number: newNumber,
-    id: String(persons.length + 1 )
-  }
+  };
 
   personService
-  .create(nameObject)
-  .then(response => {
-    setPersons(persons.concat(response))
-    setMessage({
-      content: `Added ${newName}`,
-      type: "success",
+    .create(nameObject)
+    .then((newPerson) => {
+      console.log('New person added:', newPerson);
+      setPersons(persons.concat(newPerson));
+      setMessage({
+        content: `Added ${newName}`,
+        type: "success",
+      });
+      setTimeout(() => {
+        setMessage({ content: null, type: "" });
+      }, 5000);
+      setNewName("");
+      setNewNumber("");
     })
-    setTimeout(() => {
-      setMessage({content: null, type:""})
-    }, 5000)
-    setNewName('')
-    setNewNumber('')
-  })
-}
+    .catch((error) => {
+      if (error.response && error.response.data.error) {
+        setMessage({ content: error.response.data.error, type: "error" });
+      } else {
+        setMessage({ content: "An unexpected error occurred", type: "error" });
+      }
+    });
+};
 
 const deletePerson = (id, name) => {
   if (window.confirm(`Delete ${name}`)) {

@@ -91,7 +91,7 @@ app.post('/api/persons', (request, response) => {
   }
 
   const person = {
-    id: String(Math.floor(Math.random() * 1000000000)),
+    id: body.id,
     name: body.name,
     number: body.number,
   }
