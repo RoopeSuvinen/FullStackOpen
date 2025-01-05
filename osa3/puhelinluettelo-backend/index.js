@@ -5,6 +5,7 @@ const cors = require('cors')
 
 app.use(cors())
 app.use(express.json())
+app.use(express.static('dist')) // Express shows static pages index.html
 
 morgan.token('body', (req) => JSON.stringify(req.body));
 
