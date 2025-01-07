@@ -17,14 +17,14 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 let persons = [
 ]
 
-// This route returns list of all persons
+// Returns list of all persons
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(persons => {
     response.json(persons)
   })
 })
 
-// This roude returns info of how many persons in list and response time.
+// Returns info of how many persons in list and response time.
 app.get('/info', (request, response) => {
     const personCount = persons.length
     const responseTime = new Date()
@@ -40,14 +40,9 @@ app.get('/info', (request, response) => {
 
 // Gets info of certain person with certain id. 
 app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id // Id is string, not number.
-  const person = persons.find(person => person.id === id)
-  if (person) {
+  Person.findById(request.params.id).then(person => {
     response.json(person)
-  } else {
-    console.log('Person not found')
-    response.status(404).end()
-  }
+  })
 })
 
 // Deletes person from list.
@@ -75,15 +70,15 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  const person = {
-    id: body.id,
+  // New person is added via constructor method.
+  const person = new Person({
     name: body.name,
     number: body.number,
-  }
+  })
 
-  console.log(person)
-  persons = persons.concat(person)
-  response.json(person)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
 
 
