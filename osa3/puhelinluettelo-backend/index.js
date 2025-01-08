@@ -47,10 +47,10 @@ app.get('/api/persons/:id', (request, response) => {
 
 // Deletes person from list.
 app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  persons = persons.filter(person => person.id !== id)
-
-  response.status(204).end()
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
 })
 
 // Adds new entry in persons -list. Randomizes the id. 
