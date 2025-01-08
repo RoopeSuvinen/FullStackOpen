@@ -27,17 +27,19 @@ app.get('/api/persons', (request, response) => {
 })
 
 // Returns info of how many persons in list and response time.
-app.get('/info', (request, response) => {
-    const personCount = persons.length
-    const responseTime = new Date()
+app.get('/info', (request, response, next) => {
+  Person.countDocuments({})
+    .then(personCount => {
+      const responseTime = new Date()
+      const infoText = 
+      `<div>
+        <p>Phonebook has info for ${personCount} people</p>
+        <p>${responseTime}</p>
+      </div>`
 
-    const infoText = 
-    `<div>
-      <p>Phonebook has info for ${personCount} people</p>
-      <p>${responseTime}</p>
-    </div>`
-
-    response.send(infoText)
+      response.send(infoText)
+    })
+    .catch(error => next(error))
 })
 
 // Gets info of certain person with certain id. 
