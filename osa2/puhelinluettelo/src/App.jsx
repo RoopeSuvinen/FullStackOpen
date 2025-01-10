@@ -86,18 +86,18 @@ const App = () => {
  * @returns 
  */
 const addName = (event) => {
-  event.preventDefault();
+  event.preventDefault()
 
   const existingPerson = persons.find((person) => person.name === newName);
 
   if (existingPerson) {
     if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
-      const updatedPerson = { ...existingPerson, number: newNumber };
+      const updatedPerson = { ...existingPerson, number: newNumber }
 
       personService
         .update(existingPerson.id, updatedPerson)
         .then((updated) => {
-          setPersons(persons.map((person) => (person.id !== existingPerson.id ? person : updated)));
+          setPersons(persons.map((person) => (person.id !== existingPerson.id ? person : updated)))
           setMessage({
             content: `Updated ${newName}'s number to ${newNumber}`,
             type: "success",
@@ -111,19 +111,19 @@ const addName = (event) => {
         .catch((error) => {
           if (error.response && error.response.status === 400 && error.response.data.error) {
             // Näytetään Mongoose-validaattorin tuottama virheviesti
-            setMessage({ content: error.response.data.error, type: "error" });
+            setMessage({ content: error.response.data.error, type: "error" })
           } else if (error.response && error.response.status === 404) {
             setMessage({
-              content: `Information of ${newName} has already been removed from serverrrr`,
+              content: `Information of ${newName} has already been removed from server`,
               type: "error",
             });
-            setPersons(persons.filter((person) => person.id !== existingPerson.id));
+            setPersons(persons.filter((person) => person.id !== existingPerson.id))
           } else {
-            setMessage({ content: "An unexpected error occurred", type: "error" });
+            setMessage({ content: "An unexpected error occurred", type: "error" })
           }
           setTimeout(() => {
-            setMessage({ content: null, type: "" });
-          }, 5000);
+            setMessage({ content: null, type: "" })
+          }, 5000)
         })
     }
     return
@@ -138,26 +138,26 @@ const addName = (event) => {
   personService
     .create(nameObject)
     .then((newPerson) => {
-      console.log('New person added:', newPerson);
-      setPersons(persons.concat(newPerson));
+      console.log('New person added:', newPerson)
+      setPersons(persons.concat(newPerson))
       setMessage({
         content: `Added ${newName}`,
         type: "success",
       });
       setTimeout(() => {
-        setMessage({ content: null, type: "" });
-      }, 5000);
-      setNewName("");
-      setNewNumber("");
+        setMessage({ content: null, type: "" })
+      }, 5000)
+      setNewName("")
+      setNewNumber("")
     })
     .catch((error) => {
       if (error.response && error.response.data.error) {
-        setMessage({ content: error.response.data.error, type: "error" });
+        setMessage({ content: error.response.data.error, type: "error" })
       } else {
-        setMessage({ content: "An unexpected error occurred", type: "error" });
+        setMessage({ content: "An unexpected error occurred", type: "error" })
       }
-    });
-};
+    })
+}
 
 const deletePerson = (id, name) => {
   if (window.confirm(`Delete ${name}`)) {
@@ -169,7 +169,7 @@ const deletePerson = (id, name) => {
           type: "success"
         })
         setTimeout(() => {
-          setMessage({ content: null, type: "" });
+          setMessage({ content: null, type: "" })
         }, 5000)
         setPersons(persons.filter(person => person.id !== id))
       })
