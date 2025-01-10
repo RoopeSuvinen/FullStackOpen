@@ -101,21 +101,32 @@ const addName = (event) => {
           setMessage({
             content: `Updated ${newName}'s number to ${newNumber}`,
             type: "success",
-          });
+          })
+          setTimeout(() => {
+            setMessage({ content: null, type: "" })
+          }, 5000)
+          setNewName("")
+          setNewNumber("")
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 400 && error.response.data.error) {
+            // Näytetään Mongoose-validaattorin tuottama virheviesti
+            setMessage({ content: error.response.data.error, type: "error" });
+          } else if (error.response && error.response.status === 404) {
+            setMessage({
+              content: `Information of ${newName} has already been removed from serverrrr`,
+              type: "error",
+            });
+            setPersons(persons.filter((person) => person.id !== existingPerson.id));
+          } else {
+            setMessage({ content: "An unexpected error occurred", type: "error" });
+          }
           setTimeout(() => {
             setMessage({ content: null, type: "" });
           }, 5000);
-          setNewName("");
-          setNewNumber("");
         })
-        .catch((error) => {
-          setMessage({
-            content: `Information of ${newName} has already been removed from server`,
-            type: "error",
-          });
-        });
     }
-    return;
+    return
   }
 
   const nameObject = {
