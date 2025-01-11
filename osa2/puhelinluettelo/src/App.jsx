@@ -40,7 +40,7 @@ const Persons = ({ persons, onDelete }) => {
 
 const Notification = ({ message }) => {
   if (!message || !message.content) {
-    return null;
+    return null
   }
 
   const style = {
@@ -51,10 +51,10 @@ const Notification = ({ message }) => {
     borderRadius: "5px",
     padding: "10px",
     marginBottom: "10px",
-  };
+  }
 
-  return <div style={style}>{message.content}</div>;
-};
+  return <div style={style}>{message.content}</div>
+}
 
 const App = () => {
 
@@ -67,7 +67,7 @@ const App = () => {
 
   // Fetching data using Effect hook.
   useEffect(() => {
-    console.log('effect');
+    console.log('effect')
     personService
       .getAll()
       .then(initialPersons => {
@@ -88,7 +88,7 @@ const App = () => {
 const addName = (event) => {
   event.preventDefault()
 
-  const existingPerson = persons.find((person) => person.name === newName);
+  const existingPerson = persons.find((person) => person.name === newName)
 
   if (existingPerson) {
     if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
@@ -116,7 +116,7 @@ const addName = (event) => {
             setMessage({
               content: `Information of ${newName} has already been removed from server`,
               type: "error",
-            });
+            })
             setPersons(persons.filter((person) => person.id !== existingPerson.id))
           } else {
             setMessage({ content: "An unexpected error occurred", type: "error" })
@@ -133,7 +133,7 @@ const addName = (event) => {
     id: String(Math.floor(Math.random() * 1000000000)),
     name: newName,
     number: newNumber,
-  };
+  }
 
   personService
     .create(nameObject)
@@ -143,7 +143,7 @@ const addName = (event) => {
       setMessage({
         content: `Added ${newName}`,
         type: "success",
-      });
+      })
       setTimeout(() => {
         setMessage({ content: null, type: "" })
       }, 5000)
