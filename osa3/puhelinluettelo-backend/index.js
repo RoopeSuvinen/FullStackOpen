@@ -13,8 +13,8 @@ app.use(express.json())
 
 
 // POST-HTTP information to console via morgan.
-morgan.token('body', (req) => JSON.stringify(req.body));
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+morgan.token('body', (req) => JSON.stringify(req.body))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let persons = [
 ]
@@ -31,7 +31,7 @@ app.get('/info', (request, response, next) => {
   Person.countDocuments({})
     .then(personCount => {
       const responseTime = new Date()
-      const infoText = 
+      const infoText =
       `<div>
         <p>Phonebook has info for ${personCount} people</p>
         <p>${responseTime}</p>
@@ -42,7 +42,7 @@ app.get('/info', (request, response, next) => {
     .catch(error => next(error))
 })
 
-// Gets info of certain person with certain id. 
+// Gets info of certain person with certain id.
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
@@ -51,14 +51,14 @@ app.get('/api/persons/:id', (request, response, next) => {
       } else {
         response.status(404).end()
       }
-  })
+    })
     .catch(error => next(error))
 })
 
 // Deletes person from list.
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -68,32 +68,32 @@ app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
 
   Person.findByIdAndUpdate(
-    request.params.id, 
-    {name, number},
-    {new: true, runValidators: true, context: 'query'}
+    request.params.id,
+    { name, number },
+    { new: true, runValidators: true, context: 'query' }
   )
-  .then(updatedPerson => {
-    if (updatedPerson) {
-      response.json(updatedPerson)
-    } else {
-      response.status(404).send({ error: 'Person not found' })
-    }
-  })
-  .catch((error) => {
-    if (error.name === 'ValidationError') {
-      response.status(400).json({ error: error.message })
-    } else {
-      next(error)
-    }
-  })
+    .then(updatedPerson => {
+      if (updatedPerson) {
+        response.json(updatedPerson)
+      } else {
+        response.status(404).send({ error: 'Person not found' })
+      }
+    })
+    .catch((error) => {
+      if (error.name === 'ValidationError') {
+        response.status(400).json({ error: error.message })
+      } else {
+        next(error)
+      }
+    })
 })
 
-// Adds new entry in persons -list. Randomizes the id. 
+// Adds new entry in persons -list. Randomizes the id.
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if(body.name === undefined) {
-    return response.status(400).json({ error: 'name missing'})
+    return response.status(400).json({ error: 'name missing' })
   }
 
   if (!body.name || !body.number) {
@@ -118,12 +118,12 @@ app.post('/api/persons', (request, response, next) => {
   person.save()
     .then(savedPerson => {
       response.json(savedPerson)
-  })
+    })
     .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint'})
+  response.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
