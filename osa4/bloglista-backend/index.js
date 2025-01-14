@@ -1,22 +1,9 @@
 require('dotenv').config()
 const express = require('express')
-var morgan = require('morgan')
 const app = express()
 const cors = require('cors')
 
-const Person = require('./models/blogs')
-
-const blogSchema = mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number
-})
-
-const Blog = mongoose.model('Blog', blogSchema)
-
-const mongoUrl = 'mongodb://localhost/bloglist'
-mongoose.connect(mongoUrl)
+const Blog = require('./models/blogs')
 
 app.use(cors())
 app.use(express.static('dist')) // Express shows static pages index.html
