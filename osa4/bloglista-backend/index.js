@@ -1,7 +1,10 @@
+require('dotenv').config()
 const express = require('express')
+var morgan = require('morgan')
 const app = express()
 const cors = require('cors')
-const mongoose = require('mongoose')
+
+const Person = require('./models/blogs')
 
 const blogSchema = mongoose.Schema({
   title: String,
@@ -16,6 +19,7 @@ const mongoUrl = 'mongodb://localhost/bloglist'
 mongoose.connect(mongoUrl)
 
 app.use(cors())
+app.use(express.static('dist')) // Express shows static pages index.html
 app.use(express.json())
 
 app.get('/api/blogs', (request, response) => {

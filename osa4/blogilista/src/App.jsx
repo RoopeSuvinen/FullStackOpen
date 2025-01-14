@@ -25,12 +25,6 @@ const BlogList = () => {
   )
 }
 
-// Eventhandler for new Blogpost information. TODO: Valdiation and checks for new blog.
-const addBlog = (event) => {
-  event.preventDefault()
-
-  
-}
 
 
 function App() {
@@ -39,12 +33,24 @@ function App() {
   const [newAuthor, setNewAuthor] = useState('')
   const [newTitle, setNewTitle] = useState('')
   const [newUrl, setNewUrl] = useState('')
+  const [blogs, setBlogs] = useState([])
 
   // Event handlers for input data
   const handleAddAuthor = (event) => setNewAuthor(event.target.value)
   const handleAddTitle = (event) => setNewTitle(event.target.value)
   const handleAddUrl = (event) => setNewUrl(event.target.value)
 
+  // Eventhandler for new Blogpost information. TODO: Valdiation and checks for new blog.
+  const addBlog = (event) => {
+  event.preventDefault()
+
+  blogService
+    .create(blogObject)
+    .then((newBlog) => {
+      console.log('New blog added:', newBlog)
+      setBlogs(blogs.concat(newBlog))
+    })
+}
   return (
     <div>
       <h1>Add new blog</h1>
