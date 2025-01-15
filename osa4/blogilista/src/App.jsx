@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
+import blogService from './services/blogs'
 
 // Component for adding new Blogpost
 const BlogForm = ({onSubmit, newAuthor, handleAddAuthor, newTitle, handleAddTitle, newUrl, handleAddUrl}) => {
@@ -10,7 +11,7 @@ const BlogForm = ({onSubmit, newAuthor, handleAddAuthor, newTitle, handleAddTitl
         Title: <input value={newTitle} onChange={handleAddTitle} />
         Url: <input value ={newUrl} onChange={handleAddUrl} />
       </div>
-      <button type="submit"> Add blog </button> 
+      <button type="submit">Add blog</button> 
     </form>
   )
 }
@@ -39,10 +40,21 @@ function App() {
   const handleAddAuthor = (event) => setNewAuthor(event.target.value)
   const handleAddTitle = (event) => setNewTitle(event.target.value)
   const handleAddUrl = (event) => setNewUrl(event.target.value)
-
+ 
   // Eventhandler for new Blogpost information. TODO: Valdiation and checks for new blog.
   const addBlog = (event) => {
   event.preventDefault()
+
+  // Fetching data using Effect hook
+  useEffect(() => {
+    console.log('effect')
+    blogService
+    .getAll()
+    .then(blogPosts => {
+      console.log(blogPosts)
+      setBlogs(blogPosts)
+    })
+  })
 
   blogService
     .create(blogObject)
