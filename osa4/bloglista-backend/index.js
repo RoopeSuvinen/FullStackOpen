@@ -18,7 +18,14 @@ app.get('/api/blogs', (request, response) => {
 })
 
 app.post('/api/blogs', (request, response) => {
-  const blog = new Blog(request.body)
+  const body = new Blog(request.body)
+
+  // New blog is added via constructor method
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+  })
 
   blog
     .save()

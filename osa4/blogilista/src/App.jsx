@@ -67,7 +67,21 @@ function App() {
   const addBlog = (event) => {
   event.preventDefault()
 
-    // TODO Make adding a new blog functionality
+  const blogObject = {
+    title: newTitle,
+    author: newAuthor,
+    url: newUrl,
+  }
+
+  blogService
+    .create(blogObject)
+    .then((newBlog) => {
+      console.log('New blog added:', newBlog)
+      setBlogs(blogs.concat(newBlog))
+      setNewTitle("")
+      setNewAuthor("")
+      setNewUrl("")
+    })
 }
   return (
     <div>
