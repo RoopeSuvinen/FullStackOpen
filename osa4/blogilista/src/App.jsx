@@ -1,8 +1,9 @@
-/* eslint-disable react/prop-types */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import blogService from './services/blogs'
+import './index.css'
 
 // Component for adding new Blogpost
+// eslint-disable-next-line react/prop-types
 const BlogForm = ({onSubmit, newAuthor, handleAddAuthor, newTitle, handleAddTitle, newUrl, handleAddUrl}) => {
   return (
     <form onSubmit={onSubmit}>
@@ -17,16 +18,26 @@ const BlogForm = ({onSubmit, newAuthor, handleAddAuthor, newTitle, handleAddTitl
 }
 
 // Component for forming list of blogs
-const BlogList = () => {
-
- return( <ul>
-    <li>Blog1</li>
-    <li>Blog2</li>
-  </ul>
+const BlogList = ({ blogs }) => {
+  return (
+    <div className="blog-list">
+      {blogs.map((blog) => (
+        <div className="blog-card" key={blog.title}>
+          <h4 className="blog-title">{blog.title}</h4>
+          <p className="blog-author">
+            <strong>Author:</strong> {blog.author}
+          </p>
+          <p className="blog-url">
+            <strong>URL:</strong>{' '}
+            <a href={blog.url} target="_blank" rel="noopener noreferrer">
+              {blog.url}
+            </a>
+          </p>
+        </div>
+      ))}
+    </div>
   )
 }
-
-
 
 function App() {
 
@@ -41,10 +52,6 @@ function App() {
   const handleAddTitle = (event) => setNewTitle(event.target.value)
   const handleAddUrl = (event) => setNewUrl(event.target.value)
  
-  // Eventhandler for new Blogpost information. TODO: Valdiation and checks for new blog.
-  const addBlog = (event) => {
-  event.preventDefault()
-
   // Fetching data using Effect hook
   useEffect(() => {
     console.log('effect')
@@ -54,14 +61,13 @@ function App() {
       console.log(blogPosts)
       setBlogs(blogPosts)
     })
-  })
+  }, [])
 
-  blogService
-    .create(blogObject)
-    .then((newBlog) => {
-      console.log('New blog added:', newBlog)
-      setBlogs(blogs.concat(newBlog))
-    })
+  // Eventhandler for new Blogpost information. TODO: Valdiation and checks for new blog.
+  const addBlog = (event) => {
+  event.preventDefault()
+
+    // TODO Make adding a new blog functionality
 }
   return (
     <div>
@@ -76,7 +82,7 @@ function App() {
         handleAddUrl={handleAddUrl}
       />
       <h1>Bloglist</h1>
-      <BlogList />
+      <BlogList blogs={blogs}/>
     </div>
   )
 }
