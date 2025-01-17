@@ -18,10 +18,11 @@ const BlogForm = ({onSubmit, newAuthor, handleAddAuthor, newTitle, handleAddTitl
 }
 
 // Component for forming list of blogs
-const BlogList = ({ blogs }) => {
+const BlogList = ({ blogs, votes, onVote }) => {
+
   return (
     <div className="blog-list">
-      {blogs.map((blog) => (
+      {blogs.map((blog, index) => (
         <div className="blog-card" key={blog.title}>
           <h4 className="blog-title">{blog.title}</h4>
           <p className="blog-author">
@@ -33,6 +34,10 @@ const BlogList = ({ blogs }) => {
               {blog.url}
             </a>
           </p>
+          <p className="blog-votes">
+            <strong>Votes:</strong> {votes[index]}
+          </p>
+          <button onClick={() => onVote(index)}>Vote</button>
         </div>
       ))}
     </div>
@@ -46,6 +51,7 @@ function App() {
   const [newTitle, setNewTitle] = useState('')
   const [newUrl, setNewUrl] = useState('')
   const [blogs, setBlogs] = useState([])
+  const [votes, setVotes] = useState([])
 
   // Event handlers for input data
   const handleAddAuthor = (event) => setNewAuthor(event.target.value)
@@ -60,8 +66,16 @@ function App() {
     .then(blogPosts => {
       console.log(blogPosts)
       setBlogs(blogPosts)
+      setVotes(blogPosts.map(() => 0))
     })
   }, [])
+
+  // Adds vote for blog
+  const increaseVote = (index) => {
+    const updatedVotes = [...votes]
+    updatedVotes[index]++
+    setVotes(updatedVotes)
+  }
 
   // Eventhandler for new Blogpost information. TODO: Valdiation and checks for new blog.
   const addBlog = (event) => {
@@ -96,7 +110,7 @@ function App() {
         handleAddUrl={handleAddUrl}
       />
       <h1>Bloglist</h1>
-      <BlogList blogs={blogs}/>
+      <BlogList blogs={blogs} votes={votes} onVote={increaseVote} />
     </div>
   )
 }
