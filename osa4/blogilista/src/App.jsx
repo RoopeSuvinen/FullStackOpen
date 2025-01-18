@@ -18,12 +18,12 @@ const BlogForm = ({onSubmit, newAuthor, handleAddAuthor, newTitle, handleAddTitl
 }
 
 // Component for forming list of blogs
-const BlogList = ({ blogs, votes, onVote }) => {
+const BlogList = ({ blogs, votes, onVote, onDelete }) => {
 
   return (
     <div className="blog-list">
       {blogs.map((blog, index) => (
-        <div className="blog-card" key={blog.title}>
+        <div className="blog-card" key={blog.id}>
           <h4 className="blog-title">{blog.title}</h4>
           <p className="blog-author">
             <strong>Author:</strong> {blog.author}
@@ -38,6 +38,7 @@ const BlogList = ({ blogs, votes, onVote }) => {
             <strong>Votes:</strong> {votes[index]}
           </p>
           <button onClick={() => onVote(index)}>Vote</button>
+          <button onClick={() => onDelete(blog.id, blog.title)}>Delete blog</button>
         </div>
       ))}
     </div>
@@ -68,6 +69,9 @@ function App() {
       setBlogs(blogPosts)
       setVotes(blogPosts.map(() => 0))
     })
+    .catch(error => {
+      console.error('Error fetching blogs', error)
+    })
   }, [])
 
   // Adds vote for blog
@@ -80,6 +84,18 @@ function App() {
   // Eventhandler for new Blogpost information. TODO: Valdiation and checks for new blog.
   const addBlog = (event) => {
   event.preventDefault()
+
+  // Checking if there is same blog in the list.
+  const existingBlog = blogs.find((blog) =>
+    blog.title === newTitle || blog.url === newUrl
+  )
+
+  if(existingBlog) {
+    alert(
+    `Blog with the same ${existingBlog.title === newTitle ? "title" : "URL"} already exists.`
+    )
+    return
+  }
 
   const blogObject = {
     title: newTitle,
@@ -97,6 +113,17 @@ function App() {
       setNewUrl("")
     })
 }
+
+const deleteBlog = (id, title) => {
+  if (window.confirm(`Delete ${title}`)) {
+    blogService
+      .remove(id)
+      .then(() => {
+        setBlogs(blogs.filter(blog => blog.id !== id))
+      })
+  }
+}
+
   return (
     <div>
       <h1>Add new blog</h1>
@@ -110,7 +137,7 @@ function App() {
         handleAddUrl={handleAddUrl}
       />
       <h1>Bloglist</h1>
-      <BlogList blogs={blogs} votes={votes} onVote={increaseVote} />
+      <BlogList blogs={blogs} votes={votes} onVote={increaseVote} onDelete={deleteBlog} />
     </div>
   )
 }

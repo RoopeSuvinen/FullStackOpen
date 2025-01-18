@@ -1,3 +1,4 @@
+/* eslint-disable @stylistic/js/linebreak-style */
 require('dotenv').config()
 const express = require('express')
 var morgan = require('morgan')
