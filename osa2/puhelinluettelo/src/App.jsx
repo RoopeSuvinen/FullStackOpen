@@ -110,7 +110,7 @@ const addName = (event) => {
         })
         .catch((error) => {
           if (error.response && error.response.status === 400 && error.response.data.error) {
-            // Näytetään Mongoose-validaattorin tuottama virheviesti
+            // Shows mongoose error message.
             setMessage({ content: error.response.data.error, type: "error" })
           } else if (error.response && error.response.status === 404) {
             setMessage({

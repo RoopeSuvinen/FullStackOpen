@@ -31,39 +31,39 @@ app.get('/api/blogs/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/blogs', (request, response) => {
-  const body = new Blog(request.body)
+app.post('/api/blogs', (request, response, next) => {
+  const body = request.body
 
-  if(body.title === undefined) {
-    return response.status(400).json({ error: 'Title missing' })
-  }
-
-  if (!body.author || !body.url || !body.title) {
+  if (!body.title || !body.author || !body.url) {
     return response.status(400).json({
-      error: 'Person information missing'
+      error: 'Missing required fields: title, author, or url',
     })
   }
 
-  const checkTitle = blogs.some(blog => blog.title === body.title)
-  if (checTitle) {
-    return response.status(400).json({
-      error: 'Title must be unique'
-    })
-  }
+  // Checks if there is same title in bloglist
+  Blog.findOne({ title: body.title })
+    .then((existingBlog) => {
+      if (existingBlog) {
+        return response.status(400).json({
+          error: 'Title must be unique',
+        })
+      }
 
-  // New blog is added via constructor method
-  const blog = new Blog({
-    title: body.title,
-    author: body.author,
-    url: body.url,
-  })
+      // If not, create a new blog via constructor
+      const blog = new Blog({
+        title: body.title,
+        author: body.author,
+        url: body.url,
+      })
 
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
+      return blog.save()
     })
-    .catch(error => next(error))
+    .then((savedBlog) => {
+      response.status(201).json(savedBlog)
+    })
+    .catch((error) => {
+      next(error)
+    })
 })
 
 // Deletes blog from list.

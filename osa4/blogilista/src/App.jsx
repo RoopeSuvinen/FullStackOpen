@@ -3,7 +3,6 @@ import blogService from './services/blogs'
 import './index.css'
 
 // Component for adding new Blogpost
-// eslint-disable-next-line react/prop-types
 const BlogForm = ({onSubmit, newAuthor, handleAddAuthor, newTitle, handleAddTitle, newUrl, handleAddUrl}) => {
   return (
     <form onSubmit={onSubmit}>
@@ -108,6 +107,7 @@ function App() {
     .then((newBlog) => {
       console.log('New blog added:', newBlog)
       setBlogs(blogs.concat(newBlog))
+      setVotes(votes.concat(0))
       setNewTitle("")
       setNewAuthor("")
       setNewUrl("")
