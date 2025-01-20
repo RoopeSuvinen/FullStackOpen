@@ -1,35 +1,20 @@
 const mongoose = require('mongoose')
 
-mongoose.set('strictQuery', false)
-
-const url = process.env.MONGODB_URI
-
-console.log('connecting to', url)
-
-// Connecting to mongoDB using mongoose
-mongoose.connect(url)
-  .then(() => {
-    console.log('Connected to MongoDB')
-  })
-  .catch((error) => {
-    console.log('error conneting to MongoDB:', error.Message)
-  })
-
 const blogSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    minlength: 3,
+    minlength: 3
   },
   author: {
     type: String,
     required: true,
-    minlength: 3,
+    minlength: 3
   },
   url: {
     type: String,
-    required: true,
-  },
+    required: true, //TODO: Make suitable custom validator for URL's.
+  }
 })
 
 blogSchema.set('toJSON', {
