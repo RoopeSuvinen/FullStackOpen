@@ -41,4 +41,13 @@ describe('total likes', () => {
       likes: 12,
     })
   })
+
+  // test for author who has the most blogs
+  test('author who has the most blogs is found correctly', () => {
+    const result = listHelper.mostBlogs(blogs)
+    assert.deepStrictEqual(result, {
+        author: "Robert C. Martin",
+        blogs: 3
+    })
+  })
 })
