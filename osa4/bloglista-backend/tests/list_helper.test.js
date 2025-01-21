@@ -31,4 +31,14 @@ describe('total likes', () => {
     const result = listHelper.totalLikes(blogs)
     assert.strictEqual(result, 36)
   })
+
+  // Test for most liked blog
+  test('most liked blog is found correctly', () => {
+    const result = listHelper.favoriteBlog(blogs)
+    assert.deepStrictEqual(result, { // Using deepStrictEqual, which compares the structures and internal values.
+      title: "Canonical string reduction",
+      author: "Edsger W. Dijkstra",
+      likes: 12,
+    })
+  })
 })
