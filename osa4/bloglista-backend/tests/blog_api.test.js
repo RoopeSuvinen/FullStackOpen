@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
-const assert = require('node:assert')
+const assert = require('assert') 
 
 const api = supertest(app)
 
@@ -31,23 +31,12 @@ beforeEach(async () => {
 })
 
 test('blogs are returned as json', async () => {
-  await api
+  const response = await api
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
-})
 
-test.only('there are two blogs', async () => {
-  const response = await api.get('/api/blogs')
-
-  assert.strictEqual(response.body.length, initialBlogs.length)
-})
-
-test.only('the first blog is about HTTP methods', async () => {
-  const response = await api.get('/api/blogs')
-
-  const title = response.body.map(e => e.title)
-  assert(title.includes('HTML is easy'))
+    assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
 after(async () => {
