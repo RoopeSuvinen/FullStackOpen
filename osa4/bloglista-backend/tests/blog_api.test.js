@@ -7,6 +7,7 @@ const assert = require('assert')
 
 const api = supertest(app)
 
+// Bloglist for testing.
 const initialBlogs = [
   {
     title: 'HTML is easy',
@@ -22,6 +23,7 @@ const initialBlogs = [
   },
 ]
 
+// Format Blog-list before testing.
 beforeEach(async () => {
   await Blog.deleteMany({})
   let blogObject = new Blog(initialBlogs[0])
@@ -30,6 +32,7 @@ beforeEach(async () => {
   await blogObject.save()
 })
 
+// Test for checking blog info are returned as JSON values. HTTP-GET
 test('blogs are returned as json', async () => {
   const response = await api
     .get('/api/blogs')
@@ -39,6 +42,7 @@ test('blogs are returned as json', async () => {
     assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
+// Test for checking right id-name, HTTP-GET
 test('returned blogs have id field instead of _id', async () => {
   const response = await api
     .get('/api/blogs')
@@ -50,6 +54,30 @@ test('returned blogs have id field instead of _id', async () => {
       assert.ok(blog.id, 'Blog has id field')
       assert.strictEqual(blog._id, undefined, 'Blog does not have _id field')
     }
+})
+
+// Test for HTTP POST
+test('a new blog can be added', async () => {
+  const newBlog = {
+    title: "Tests are fun!",
+    author: "Matti Meikäläinen",
+    url: "http://esimerkki.com/blogit",
+  }
+
+  // Sending POST-request.
+  await api
+  .post('/api/blogs')
+  .send(newBlog)
+  .expect(201)
+  .expect('Content-Type', /application\/json/)
+
+  // Checks if list length is 
+  const updatedBlogList = await Blog.find({})
+  assert.strictEqual(updatedBlogList.length, initialBlogs + 1)
+
+  // Checks if added blog is in the blogList and title is correct.
+  const titles = updatedBlogList.map((blog) => blog.title)
+  assert.ok(titles.includes(newBlog.title))
 })
 
 after(async () => {
