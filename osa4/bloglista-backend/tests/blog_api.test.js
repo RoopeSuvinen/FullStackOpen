@@ -39,6 +39,19 @@ test('blogs are returned as json', async () => {
     assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
+test('returned blogs have id field instead of _id', async () => {
+  const response = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+    const blogs = response.body
+    for (const blog of blogs) {
+      assert.ok(blog.id, 'Blog has id field')
+      assert.strictEqual(blog._id, undefined, 'Blog does not have _id field')
+    }
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
