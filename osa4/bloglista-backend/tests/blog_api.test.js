@@ -64,14 +64,13 @@ test('a new blog can be added', async () => {
     url: "http://esimerkki.com/blogit",
   }
 
-  // Sending POST-request.
   await api
   .post('/api/blogs')
   .send(newBlog)
   .expect(201)
   .expect('Content-Type', /application\/json/)
 
-  // Checks if list length is 
+  // Checks if list length is 1 blog longer after POST.
   const updatedBlogList = await Blog.find({})
   assert.strictEqual(updatedBlogList.length, initialBlogs.length + 1)
 
@@ -98,6 +97,38 @@ test('if likes is not defined, default value is 0', async () => {
     const savedBlog = updatedBlogList.find(blog => blog.title === newBlog.title)
 
     assert.strictEqual(savedBlog.likes, 0)
+})
+
+test('blog without title is not added', async () => {
+  const newBlog = {
+    author: "Pentti Meikäläinen",
+    url: "http://esimerkki.com/notitle",
+    likes: 5
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400) // Title missing, 400 Bad request
+
+  const newBlogList = await Blog.find({})
+  assert.strictEqual(newBlogList.length, initialBlogs.length) // Lenght must be the same.
+})
+
+test('blog without url is not added', async () => {
+  const newBlog = {
+    author: "Maija Meikäläinen",
+    title: "Woman without url",
+    likes: 2
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400) // Url missing, 400 Bad request
+
+  const newBlogList = await Blog.find({})
+  assert.strictEqual(newBlogList.length, initialBlogs.length)  // Length must be the same
 })
 
 after(async () => {
