@@ -131,6 +131,22 @@ test('blog without url is not added', async () => {
   assert.strictEqual(newBlogList.length, initialBlogs.length)  // Length must be the same
 })
 
+test('a blog has been deleted successfully', async () => {
+  const allBlogs = await Blog.find({})
+  const deletedBlog = allBlogs[0] // Takes the first blog.
+
+  await api
+  .delete(`/api/blogs/${deletedBlog.id}`)
+  .expect(204)
+
+  const blogsAfterDelete = await Blog.find({})
+
+  assert.strictEqual(blogsAfterDelete.length, allBlogs.length - 1) // Checks if allBlogs has been reduced by one.
+  // Checks if deletet blog is gone from blogsAfterDelete -list
+  const allIds = blogsAfterDelete.map(b => b.id)
+  assert.ok(!allIds.includes(deletedBlog.id))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
