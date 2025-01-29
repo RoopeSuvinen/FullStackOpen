@@ -17,26 +17,19 @@ const BlogForm = ({onSubmit, newAuthor, handleAddAuthor, newTitle, handleAddTitl
 }
 
 // Component for forming list of blogs
-const BlogList = ({ blogs, votes, onVote, onDelete }) => {
-
+const BlogList = ({ blogs, onVote, onDelete }) => {
   return (
     <div className="blog-list">
-      {blogs.map((blog, index) => (
+      {blogs.map((blog) => (
         <div className="blog-card" key={blog.id}>
           <h4 className="blog-title">{blog.title}</h4>
-          <p className="blog-author">
-            <strong>Author:</strong> {blog.author}
-          </p>
+          <p className="blog-author"><strong>Author:</strong> {blog.author}</p>
           <p className="blog-url">
             <strong>URL:</strong>{' '}
-            <a href={blog.url} target="_blank" rel="noopener noreferrer">
-              {blog.url}
-            </a>
+            <a href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</a>
           </p>
-          <p className="blog-votes">
-            <strong>Votes:</strong> {votes[index]}
-          </p>
-          <button onClick={() => onVote(index)}>Vote</button>
+          <p className="blog-votes"><strong>Likes:</strong> {blog.likes}</p>
+          <button onClick={() => onVote(blog.id)}>Vote</button>
           <button onClick={() => onDelete(blog.id, blog.title)}>Delete blog</button>
         </div>
       ))}
@@ -74,10 +67,21 @@ function App() {
   }, [])
 
   // Adds vote for blog
-  const increaseVote = (index) => {
-    const updatedVotes = [...votes]
-    updatedVotes[index]++
-    setVotes(updatedVotes)
+  const increaseVote = async (id) => {
+    const blogToUpdate = blogs.find(blog => blog.id === id)
+    if (!blogToUpdate) return
+  
+    const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 }
+  
+    try {
+      const returnedBlog = await blogService.update(id, updatedBlog)
+  
+      setBlogs(blogs.map(blog => 
+        blog.id === id ? returnedBlog : blog
+      ))
+    } catch (error) {
+      console.error('Error updating likes:', error)
+    }
   }
 
   // Eventhandler for new Blogpost information. TODO: Valdiation and checks for new blog.

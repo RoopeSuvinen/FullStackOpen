@@ -37,16 +37,8 @@ blogsRouter.get('/', (request, response) => {
     }
   })
 
-blogsRouter.delete('/:id', (request, response, next) => {
-    Blog.findByIdAndDelete(request.params.id)
-      .then(() => {
-        response.status(204).end()
-      })
-      .catch(error => next(error))
-  })
-
 blogsRouter.delete('/:id', async (request, response, next) => {
-  try{
+  try {
     const deletedBlog = await Blog.findByIdAndDelete(request.params.id)
   
   if(!deletedBlog) {
@@ -57,6 +49,28 @@ blogsRouter.delete('/:id', async (request, response, next) => {
   } catch (error) {
     next(error)
   } 
+})
+
+// Updates blogpost. Currently updates only likes. TODO: Like count wont
+// update to mongodb. Fix this.
+blogsRouter.put('/:id', async (request, response, next) => {
+  try {
+    const { likes } = request.body
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      request.params.id,
+      { likes }, // Updates likes
+      { new: true, runValidators: true} // Returns updated list
+    )
+
+    if (!updatedBlog) {
+      return response.status(404).json({ error: 'Blog not found.'})
+    }
+
+    response.json(updatedBlog)
+  } catch (error) {
+    next(error)
+  }
 })
 
 module.exports = blogsRouter
