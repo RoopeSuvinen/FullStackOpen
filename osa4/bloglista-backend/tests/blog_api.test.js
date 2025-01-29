@@ -73,11 +73,31 @@ test('a new blog can be added', async () => {
 
   // Checks if list length is 
   const updatedBlogList = await Blog.find({})
-  assert.strictEqual(updatedBlogList.length, initialBlogs + 1)
+  assert.strictEqual(updatedBlogList.length, initialBlogs.length + 1)
 
   // Checks if added blog is in the blogList and title is correct.
   const titles = updatedBlogList.map((blog) => blog.title)
   assert.ok(titles.includes(newBlog.title))
+})
+
+test('if likes is not defined, default value is 0', async () => {
+  const newBlog = {
+    title: "Defaulting likes",
+    author: "Masa Mainio",
+    url: "http://esimerkki.com/likes",
+  }
+
+  // Sending POST-request.
+  await api
+  .post('/api/blogs')
+  .send(newBlog)
+  .expect(201)
+  .expect('Content-Type', /application\/json/)
+
+    const updatedBlogList = await Blog.find({})
+    const savedBlog = updatedBlogList.find(blog => blog.title === newBlog.title)
+
+    assert.strictEqual(savedBlog.likes, 0)
 })
 
 after(async () => {

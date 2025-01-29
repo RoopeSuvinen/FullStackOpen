@@ -14,6 +14,10 @@ const blogSchema = new mongoose.Schema({
   url: {
     type: String,
     required: true, //TODO: Make suitable custom validator for URL's.
+  },
+  likes: {
+    type: Number,
+    default: 0
   }
 })
 

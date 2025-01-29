@@ -100,6 +100,7 @@ function App() {
     title: newTitle,
     author: newAuthor,
     url: newUrl,
+    likes: 0,
   }
 
   blogService
