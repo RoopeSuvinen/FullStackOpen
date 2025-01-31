@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
-const assert = require('assert') 
+const assert = require('assert')
 
 const api = supertest(app)
 
@@ -39,7 +39,7 @@ test('blogs are returned as json', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-    assert.strictEqual(response.body.length, initialBlogs.length)
+  assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
 // Test for checking right id-name, HTTP-GET
@@ -49,26 +49,26 @@ test('returned blogs have id field instead of _id', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-    const blogs = response.body
-    for (const blog of blogs) {
-      assert.ok(blog.id, 'Blog has id field')
-      assert.strictEqual(blog._id, undefined, 'Blog does not have _id field')
-    }
+  const blogs = response.body
+  for (const blog of blogs) {
+    assert.ok(blog.id, 'Blog has id field')
+    assert.strictEqual(blog._id, undefined, 'Blog does not have _id field')
+  }
 })
 
 // Test for HTTP POST
 test('a new blog can be added', async () => {
   const newBlog = {
-    title: "Tests are fun!",
-    author: "Matti Meikäläinen",
-    url: "http://esimerkki.com/blogit",
+    title: 'Tests are fun!',
+    author: 'Matti Meikäläinen',
+    url: 'http://esimerkki.com/blogit',
   }
 
   await api
-  .post('/api/blogs')
-  .send(newBlog)
-  .expect(201)
-  .expect('Content-Type', /application\/json/)
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
 
   // Checks if list length is 1 blog longer after POST.
   const updatedBlogList = await Blog.find({})
@@ -81,28 +81,28 @@ test('a new blog can be added', async () => {
 
 test('if likes is not defined, default value is 0', async () => {
   const newBlog = {
-    title: "Defaulting likes",
-    author: "Masa Mainio",
-    url: "http://esimerkki.com/likes",
+    title: 'Defaulting likes',
+    author: 'Masa Mainio',
+    url: 'http://esimerkki.com/likes',
   }
 
   // Sending POST-request.
   await api
-  .post('/api/blogs')
-  .send(newBlog)
-  .expect(201)
-  .expect('Content-Type', /application\/json/)
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
 
-    const updatedBlogList = await Blog.find({})
-    const savedBlog = updatedBlogList.find(blog => blog.title === newBlog.title)
+  const updatedBlogList = await Blog.find({})
+  const savedBlog = updatedBlogList.find(blog => blog.title === newBlog.title)
 
-    assert.strictEqual(savedBlog.likes, 0)
+  assert.strictEqual(savedBlog.likes, 0)
 })
 
 test('blog without title is not added', async () => {
   const newBlog = {
-    author: "Pentti Meikäläinen",
-    url: "http://esimerkki.com/notitle",
+    author: 'Pentti Meikäläinen',
+    url: 'http://esimerkki.com/notitle',
     likes: 5
   }
 
@@ -117,8 +117,8 @@ test('blog without title is not added', async () => {
 
 test('blog without url is not added', async () => {
   const newBlog = {
-    author: "Maija Meikäläinen",
-    title: "Woman without url",
+    author: 'Maija Meikäläinen',
+    title: 'Woman without url',
     likes: 2
   }
 
@@ -136,8 +136,8 @@ test('a blog has been deleted successfully', async () => {
   const deletedBlog = allBlogs[0] // Takes the first blog.
 
   await api
-  .delete(`/api/blogs/${deletedBlog.id}`)
-  .expect(204)
+    .delete(`/api/blogs/${deletedBlog.id}`)
+    .expect(204)
 
   const blogsAfterDelete = await Blog.find({})
 

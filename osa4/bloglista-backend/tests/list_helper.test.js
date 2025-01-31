@@ -36,8 +36,8 @@ describe('total likes', () => {
   test('most liked blog is found correctly', () => {
     const result = listHelper.favoriteBlog(blogs)
     assert.deepStrictEqual(result, { // Using deepStrictEqual, which compares the structures and internal values.
-      title: "Canonical string reduction",
-      author: "Edsger W. Dijkstra",
+      title: 'Canonical string reduction',
+      author: 'Edsger W. Dijkstra',
       likes: 12,
     })
   })
@@ -46,8 +46,8 @@ describe('total likes', () => {
   test('author who has the most blogs is found correctly', () => {
     const result = listHelper.mostBlogs(blogs)
     assert.deepStrictEqual(result, {
-        author: "Robert C. Martin",
-        blogs: 3
+      author: 'Robert C. Martin',
+      blogs: 3
     })
   })
 
@@ -55,7 +55,7 @@ describe('total likes', () => {
   test('author with most likes is found correctly', () => {
     const result = listHelper.mostLikes(blogs)
     assert.deepStrictEqual(result, {
-      author: "Edsger W. Dijkstra",
+      author: 'Edsger W. Dijkstra',
       likes: 17,
     })
   })
