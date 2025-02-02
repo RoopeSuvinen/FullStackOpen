@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJ1dXBlcnR0aSIsImlkIjoiNjc5YmUxOWM3ODUwYTYzMjBiZGFiZTcxIiwiaWF0IjoxNzM4NDc4ODk3fQ.Jbag-rIx6q48P2GY4ItH61DuNdcrYYpUQVUFS8fI7qY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJ1dXBlcnR0aSIsImlkIjoiNjc5YmUxOWM3ODUwYTYzMjBiZGFiZTcxIiwiaWF0IjoxNzM4NDk5MzAwfQ.c2axUnT3t7DSKk46JnGHBb24d3kjtPFHjk9TDSdrSy4
 
 {
   "title": "Uusi blogi 2",
