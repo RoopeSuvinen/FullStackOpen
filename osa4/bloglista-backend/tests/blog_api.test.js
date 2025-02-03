@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs')
 
 const api = supertest(app)
 
-let authToken = ''
+let authToken = null
 
 // Bloglist for testing.
 const initialBlogs = [
@@ -134,11 +134,13 @@ describe('Tests for blog API', () => {
       likes: 5
     }
 
-    await api
+    const response = await api
       .post('/api/blogs')
       .set('Authorization', `Bearer ${authToken}`)
       .send(newBlog)
-      .expect(400) // Title missing, 400 Bad request
+      .expect(400)
+
+    assert.strictEqual(response.body.error, 'title and url are required')
 
     const newBlogList = await Blog.find({})
     assert.strictEqual(newBlogList.length, initialBlogs.length) // Lenght must be the same.

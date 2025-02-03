@@ -31,15 +31,21 @@ blogsRouter.get('/:id', async (request, response) => {
 })
 
 blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
-  const user = request.user
+  const { title, author, url, likes } = request.body
 
-  const blog = new Blog({
-    title: request.body.title,
-    author: request.body.author,
-    url: request.body.url,
-    likes: request.body.likes || 0,
-    user: user._id
-  })
+ if (!title || !url) {
+  return response.status(400).json({ error: 'title and url are required' })
+}
+
+const user = request.user
+
+const blog = new Blog({
+  title,
+  author,
+  url,
+  likes: likes || 0,
+  user: user._id
+})
 
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog._id)
@@ -64,8 +70,7 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
   response.status(204).end()
 })
 
-// Updates blogpost. Currently updates only likes. TODO: Like count wont
-// update to mongodb. Fix this.
+// Updates blogpost. Currently updates only likes. TODO: Like count wontupdate to mongodb. Fix this.
 blogsRouter.put('/:id', async (request, response) => {
   const { likes } = request.body
   const updatedBlog = await Blog.findByIdAndUpdate(
