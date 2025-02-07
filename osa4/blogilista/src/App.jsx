@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import blogService from './services/blogs'
+import loginService from './services/login'
 import './index.css'
 
 // Component for adding new Blogpost
@@ -45,6 +46,9 @@ function App() {
   const [newUrl, setNewUrl] = useState('')
   const [blogs, setBlogs] = useState([])
   const [votes, setVotes] = useState([])
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [user, setUser] = useState(null)
 
   // Event handlers for input data
   const handleAddAuthor = (event) => setNewAuthor(event.target.value)
@@ -65,6 +69,27 @@ function App() {
       console.error('Error fetching blogs', error)
     })
   }, [])
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+
+    try {
+      const user = await loginService.login({
+        username, 
+        password,
+      })
+      console.log("Logged in user:", user)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch (exception) {
+      console.error("Login failed", exception)
+      setErrorMessage('wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
 
   // Adds vote for blog
   const increaseVote = async (id) => {
@@ -129,8 +154,28 @@ const deleteBlog = (id, title) => {
   }
 }
 
+if (user === null) {
   return (
     <div>
+        <h2>Log in to application</h2>
+        <form onSubmit={handleLogin}>
+          <div>
+          username <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)}/>
+          </div>
+          <div>
+          password <input type="text" value={password} name="Password" onChange={({ target }) => setPassword(target.value)}/>
+          </div>
+          <div>
+            <button type="submit">login</button>
+          </div>
+        </form>
+    </div>
+  )
+}
+
+  return (
+    <div>
+    <p> {user.name} logged in </p>
       <h1>Add new blog</h1>
       <BlogForm 
         onSubmit={addBlog}

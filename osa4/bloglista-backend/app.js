@@ -8,6 +8,7 @@ const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
+require('dotenv').config()
 
 mongoose.set('strictQuery', false)
 
