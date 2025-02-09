@@ -18,7 +18,7 @@ const remove = (id) => {
 }
 
 const setToken = newToken => {
-  token = `Bearer ${newToken}`
+  token = newToken ? `Bearer ${newToken}` : null
 }
 
 export default {getAll, create, remove, setToken}

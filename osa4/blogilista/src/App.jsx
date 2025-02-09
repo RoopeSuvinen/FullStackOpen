@@ -79,6 +79,7 @@ function App() {
     }
   }, [])
 
+  // User login handler
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -102,6 +103,13 @@ function App() {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  // User logout handler
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogUser')
+    setUser(null)
+    blogService.setToken(null)
   }
 
   // Adds vote for blog
@@ -188,7 +196,7 @@ if (user === null) {
 
   return (
     <div>
-    <p> {user.name} logged in </p>
+    <p> {user.name} logged in </p> <button onClick={handleLogout}>Logout</button>
       <h1>Add new blog</h1>
       <BlogForm 
         onSubmit={addBlog}
