@@ -70,6 +70,15 @@ function App() {
     })
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -78,6 +87,10 @@ function App() {
         username, 
         password,
       })
+
+      // Saves user info to local storage
+      window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
+
       console.log("Logged in user:", user)
       setUser(user)
       setUsername('')
