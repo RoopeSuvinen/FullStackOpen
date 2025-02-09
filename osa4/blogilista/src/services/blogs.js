@@ -9,7 +9,11 @@ const getAll = () => {
 }
 
 const create = nameObject => {
-  const response = axios.post(baseUrl, nameObject)
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  const response = axios.post(baseUrl, nameObject, config)
   return response.then(response => response.data)
 }
 
@@ -21,4 +25,4 @@ const setToken = newToken => {
   token = newToken ? `Bearer ${newToken}` : null
 }
 
-export default {getAll, create, remove, setToken}
+export default { getAll, create, remove, setToken }

@@ -93,6 +93,7 @@ function App() {
       window.localStorage.setItem('loggedBlogUser', JSON.stringify(user))
 
       console.log("Logged in user:", user)
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
