@@ -3,8 +3,8 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJ1dXBlcnR0aSIsImlkIjoiNjc5YmUxOWM3ODUwYTYzMjBiZGFiZTcxIiwiaWF0IjoxNzM4NTAyOTQxfQ.potzPZtiNByDH3dN61tOQNiGUqMt9IY-uaTM1Bq0tqs
 
 {
-  "title": "Uusi blogi 2",
+  "title": "Uusi blogi 32",
   "author": "Ruupertti",
-  "url": "http://esimerkki22.com",
+  "url": "http://esimerkki33.com",
   "likes": 1
 }

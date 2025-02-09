@@ -63,8 +63,7 @@ const userExtractor = async (request, response, next) => {
   if (!user) {
     return response.status(401).json({ error: 'user not found' })
   }
-
-  // Tallennetaan käyttäjä request-olioon
+  
   request.user = user
   next()
 }

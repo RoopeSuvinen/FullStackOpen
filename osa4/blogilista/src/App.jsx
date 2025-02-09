@@ -38,6 +38,23 @@ const BlogList = ({ blogs, onVote, onDelete }) => {
   )
 }
 
+const Notification = ({ message }) => {
+  if (!message || !message.content) {
+    return null
+  }
+
+  const style = {
+    color: message.type === "error" ? "red" : "green",
+    background: "lightgrey",
+    fontSize: "20px",
+    borderStyle: "solid",
+    borderRadius: "5px",
+    padding: "10px",
+    marginBottom: "10px",
+  }
+
+  return <div style={style}>{message.content}</div>
+}
 function App() {
 
   // Hooks for new blogpost information
@@ -49,6 +66,7 @@ function App() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [user, setUser] = useState(null)
+  const [message, setMessage] = useState({ content: null, type: "" })
 
   // Event handlers for input data
   const handleAddAuthor = (event) => setNewAuthor(event.target.value)
@@ -99,9 +117,12 @@ function App() {
       setPassword('')
     } catch (exception) {
       console.error("Login failed", exception)
-      setErrorMessage('wrong credentials')
+      setMessage({
+        content: `Wrong username or password`,
+        type: "error",
+      })
       setTimeout(() => {
-        setErrorMessage(null)
+        setMessage(null)
       }, 5000)
     }
   }
@@ -160,6 +181,13 @@ function App() {
       console.log('New blog added:', newBlog)
       setBlogs(blogs.concat(newBlog))
       setVotes(votes.concat(0))
+      setMessage({
+        content: `A new blog ${newTitle} by ${newAuthor} added`,
+        type: "success",
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
       setNewTitle("")
       setNewAuthor("")
       setNewUrl("")
@@ -172,6 +200,10 @@ const deleteBlog = (id, title) => {
       .remove(id)
       .then(() => {
         setBlogs(blogs.filter(blog => blog.id !== id))
+        setMessage({
+          content: `A blog ${newTitle} by ${newAuthor} removed`,
+          type: "success",
+        })
       })
   }
 }
@@ -180,6 +212,7 @@ if (user === null) {
   return (
     <div>
         <h2>Log in to application</h2>
+        <Notification message={message} />
         <form onSubmit={handleLogin}>
           <div>
           username <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)}/>
@@ -208,6 +241,7 @@ if (user === null) {
         handleAddTitle={handleAddTitle}
         handleAddUrl={handleAddUrl}
       />
+      <Notification message={message} />
       <h1>Bloglist</h1>
       <BlogList blogs={blogs} votes={votes} onVote={increaseVote} onDelete={deleteBlog} />
     </div>
