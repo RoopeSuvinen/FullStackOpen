@@ -1,21 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
-
-// Component for adding new Blogpost
-const BlogForm = ({onSubmit, newAuthor, handleAddAuthor, newTitle, handleAddTitle, newUrl, handleAddUrl}) => {
-  return (
-    <form onSubmit={onSubmit}>
-      <div>
-        Author: <input value={newAuthor} onChange={handleAddAuthor} />
-        Title: <input value={newTitle} onChange={handleAddTitle} />
-        Url: <input value ={newUrl} onChange={handleAddUrl} />
-      </div>
-      <button type="submit">Add blog</button> 
-    </form>
-  )
-}
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 // Component for forming list of blogs
 const BlogList = ({ blogs, onVote, onDelete }) => {
@@ -56,6 +44,7 @@ const Notification = ({ message }) => {
   return <div style={style}>{message.content}</div>
 }
 function App() {
+  const blogFormRef = useRef()
 
   // Hooks for new blogpost information
   const [newAuthor, setNewAuthor] = useState('')
@@ -232,15 +221,20 @@ if (user === null) {
     <div>
     <p> {user.name} logged in </p> <button onClick={handleLogout}>Logout</button>
       <h1>Add new blog</h1>
-      <BlogForm 
-        onSubmit={addBlog}
-        newAuthor={newAuthor}
-        newTitle={newTitle}
-        newUrl={newUrl}
-        handleAddAuthor={handleAddAuthor}
-        handleAddTitle={handleAddTitle}
-        handleAddUrl={handleAddUrl}
-      />
+      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+  <BlogForm 
+    onSubmit={(event) => {
+      addBlog(event)
+      blogFormRef.current.toggleVisibility() // Lomake sulkeutuu lisäyksen jälkeen
+    }}
+    newAuthor={newAuthor}
+    newTitle={newTitle}
+    newUrl={newUrl}
+    handleAddAuthor={handleAddAuthor}
+    handleAddTitle={handleAddTitle}
+    handleAddUrl={handleAddUrl}
+  />
+</Togglable>
       <Notification message={message} />
       <h1>Bloglist</h1>
       <BlogList blogs={blogs} votes={votes} onVote={increaseVote} onDelete={deleteBlog} />
