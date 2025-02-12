@@ -2,29 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
-import BlogForm from './components/BlogForm'
+import BlogForm from './components/BlogForm.jsx'
 import Togglable from './components/Togglable'
-
-// Component for forming list of blogs
-const BlogList = ({ blogs, onVote, onDelete }) => {
-  return (
-    <div className="blog-list">
-      {blogs.map((blog) => (
-        <div className="blog-card" key={blog.id}>
-          <h4 className="blog-title">{blog.title}</h4>
-          <p className="blog-author"><strong>Author:</strong> {blog.author}</p>
-          <p className="blog-url">
-            <strong>URL:</strong>{' '}
-            <a href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</a>
-          </p>
-          <p className="blog-votes"><strong>Likes:</strong> {blog.likes}</p>
-          <button onClick={() => onVote(blog.id)}>Vote</button>
-          <button onClick={() => onDelete(blog.id, blog.title)}>Delete blog</button>
-        </div>
-      ))}
-    </div>
-  )
-}
+import BlogList from './components/BlogList.jsx'
 
 const Notification = ({ message }) => {
   if (!message || !message.content) {
@@ -237,7 +217,7 @@ if (user === null) {
 </Togglable>
       <Notification message={message} />
       <h1>Bloglist</h1>
-      <BlogList blogs={blogs} votes={votes} onVote={increaseVote} onDelete={deleteBlog} />
+      <BlogList blogs={blogs} onVote={increaseVote} onDelete={deleteBlog} />
     </div>
   )
 }
