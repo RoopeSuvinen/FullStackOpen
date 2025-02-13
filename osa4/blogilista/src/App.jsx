@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
-import BlogForm from './components/BlogForm.jsx'
 import Togglable from './components/Togglable'
-import BlogList from './components/BlogList.jsx'
+import BlogList from './components/BlogList'
+import BlogForm from './components/BlogForm'
 
 const Notification = ({ message }) => {
   if (!message || !message.content) {
@@ -24,12 +24,9 @@ const Notification = ({ message }) => {
   return <div style={style}>{message.content}</div>
 }
 function App() {
-  const blogFormRef = useRef()
 
   // Hooks for new blogpost information
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newTitle, setNewTitle] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  const blogFormRef = useRef()
   const [blogs, setBlogs] = useState([])
   const [votes, setVotes] = useState([])
   const [username, setUsername] = useState("")
@@ -37,11 +34,6 @@ function App() {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState({ content: null, type: "" })
 
-  // Event handlers for input data
-  const handleAddAuthor = (event) => setNewAuthor(event.target.value)
-  const handleAddTitle = (event) => setNewTitle(event.target.value)
-  const handleAddUrl = (event) => setNewUrl(event.target.value)
- 
   // Fetching data using Effect hook
   useEffect(() => {
     console.log('effect')
@@ -57,6 +49,7 @@ function App() {
     })
   }, [])
 
+  // Token is saved to browser localStorage.
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
     if (loggedUserJSON) {
@@ -121,47 +114,48 @@ function App() {
     }
   }
 
-  // Eventhandler for new Blogpost information. TODO: Valdiation and checks for new blog.
-  const addBlog = (event) => {
-  event.preventDefault()
-
-  // Checking if there is same blog in the list.
-  const existingBlog = blogs.find((blog) =>
-    blog.title === newTitle || blog.url === newUrl
-  )
-
-  if(existingBlog) {
-    alert(
-    `Blog with the same ${existingBlog.title === newTitle ? "title" : "URL"} already exists.`
+  // Eventhandler for new Blogpost information.
+  const addBlog = (blogObject) => {
+    if (!user) {
+      setMessage({ content: "You need to log in to add a blog", type: "error" })
+      setTimeout(() => setMessage(null), 5000)
+      return
+    }
+  
+    const existingBlog = blogs.find(blog =>
+      blog.title === blogObject.title || blog.url === blogObject.url
     )
-    return
-  }
-
-  const blogObject = {
-    title: newTitle,
-    author: newAuthor,
-    url: newUrl,
-    likes: 0,
-  }
-
-  blogService
-    .create(blogObject)
-    .then((newBlog) => {
-      console.log('New blog added:', newBlog)
-      setBlogs(blogs.concat(newBlog))
+  
+    if (existingBlog) {
+      alert(`Blog with the same ${existingBlog.title === blogObject.title ? "title" : "URL"} already exists.`)
+      return
+    }
+  
+    const newBlog = {
+      ...blogObject,
+      user: user,  // Lisätään käyttäjä mukaan
+    }
+  
+    blogService.create(newBlog).then((returnedBlog) => {
+      const blogWithUser = {
+        ...returnedBlog,
+        user: {
+          username: user.username,
+          name: user.name,
+          id: user.id,
+        }
+      }
+  
+      setBlogs(blogs.concat(blogWithUser))
       setVotes(votes.concat(0))
-      setMessage({
-        content: `A new blog ${newTitle} by ${newAuthor} added`,
-        type: "success",
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-      setNewTitle("")
-      setNewAuthor("")
-      setNewUrl("")
+      setMessage({ content: `A new blog "${returnedBlog.title}" by ${returnedBlog.author} added`, type: "success" })
+      setTimeout(() => setMessage(null), 5000)
+  
+      blogFormRef.current.toggleVisibility()
+    }).catch(error => {
+      console.error("Error adding blog:", error)
     })
-}
+  }
 
 const deleteBlog = (id, title) => {
   if (window.confirm(`Delete ${title}`)) {
@@ -197,29 +191,22 @@ if (user === null) {
   )
 }
 
-  return (
-    <div>
-    <p> {user.name} logged in </p> <button onClick={handleLogout}>Logout</button>
-      <h1>Add new blog</h1>
-      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-  <BlogForm 
-    onSubmit={(event) => {
-      addBlog(event)
-      blogFormRef.current.toggleVisibility() // Lomake sulkeutuu lisäyksen jälkeen
-    }}
-    newAuthor={newAuthor}
-    newTitle={newTitle}
-    newUrl={newUrl}
-    handleAddAuthor={handleAddAuthor}
-    handleAddTitle={handleAddTitle}
-    handleAddUrl={handleAddUrl}
-  />
-</Togglable>
-      <Notification message={message} />
-      <h1>Bloglist</h1>
-      <BlogList blogs={blogs} onVote={increaseVote} onDelete={deleteBlog} />
-    </div>
-  )
+return (
+  <div>
+    <p> {user.name} logged in </p> 
+    <button onClick={handleLogout}>Logout</button>
+
+    <h1>Add new blog</h1>
+    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+      <BlogForm createBlog={addBlog} />
+    </Togglable>
+
+    <Notification message={message} />
+
+    <h1>Bloglist</h1>
+    <BlogList blogs={blogs} onVote={increaseVote} onDelete={deleteBlog} />
+  </div>
+)
 }
 
 export default App
