@@ -107,7 +107,7 @@ function App() {
       const returnedBlog = await blogService.update(id, updatedBlog)
   
       setBlogs(blogs.map(blog => 
-        blog.id === id ? returnedBlog : blog
+        blog.id === id ? { ...returnedBlog, user: blogToUpdate.user } : blog
       ))
     } catch (error) {
       console.error('Error updating likes:', error)

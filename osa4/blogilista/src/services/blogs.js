@@ -17,6 +17,11 @@ const create = nameObject => {
   return response.then(response => response.data)
 }
 
+const update = async (id, updatedObject) => {
+  const response = await axios.put(`${baseUrl}/${id}`, updatedObject)
+  return response.data
+}
+
 const remove = (id) => {
   return axios.delete(`${baseUrl}/${id}`)
 }
@@ -25,4 +30,4 @@ const setToken = newToken => {
   token = newToken ? `Bearer ${newToken}` : null
 }
 
-export default { getAll, create, remove, setToken }
+export default { getAll, create, remove, setToken, update }
