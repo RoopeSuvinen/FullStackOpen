@@ -204,7 +204,7 @@ return (
     <Notification message={message} />
 
     <h1>Bloglist</h1>
-    <BlogList blogs={blogs} onVote={increaseVote} onDelete={deleteBlog} />
+    <BlogList blogs={[...blogs].sort((a,b) => b.likes - a.likes)} onVote={increaseVote} onDelete={deleteBlog} />
   </div>
 )
 }
