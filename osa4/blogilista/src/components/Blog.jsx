@@ -1,11 +1,16 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, onVote, onDelete }) => {
+const Blog = ({ blog, onVote, onDelete, user }) => {
+  console.log("Logged-in user:", user)
+  console.log("Blog user:", blog.user)
+
   const [visible, setVisible] = useState(false)
 
   const toggleVisibility = () => {
     setVisible(!visible)
   }
+
+  const showRemoveButton = user?.username && (blog.user?.username === user.username || blog.user?.id === user.id)
 
   return (
     <div className="blog-card">
@@ -27,7 +32,9 @@ const Blog = ({ blog, onVote, onDelete }) => {
             <button onClick={() => onVote(blog.id)}>like</button>
           </p>
           <p><strong>Added by:</strong> {blog.user?.name || 'Unknown'}</p>
-          <button onClick={() => onDelete(blog.id, blog.title)}>Delete</button>
+          {showRemoveButton && (
+            <button onClick={() => onDelete(blog.id, blog.title)}>Delete</button>
+          )}
         </div>
       )}
     </div>

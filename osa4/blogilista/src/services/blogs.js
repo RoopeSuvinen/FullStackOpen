@@ -23,7 +23,11 @@ const update = async (id, updatedObject) => {
 }
 
 const remove = (id) => {
-  return axios.delete(`${baseUrl}/${id}`)
+  const config = {
+    headers: { Authorization: token },
+  }
+  
+  return axios.delete(`${baseUrl}/${id}`, config)
 }
 
 const setToken = newToken => {

@@ -133,7 +133,7 @@ function App() {
   
     const newBlog = {
       ...blogObject,
-      user: user,  // Lisätään käyttäjä mukaan
+      user: user,
     }
   
     blogService.create(newBlog).then((returnedBlog) => {
@@ -157,19 +157,22 @@ function App() {
     })
   }
 
-const deleteBlog = (id, title) => {
-  if (window.confirm(`Delete ${title}`)) {
+  const deleteBlog = (id, title) => {
+    if (!window.confirm(`Delete blog "${title}"?`)) return
+  
     blogService
       .remove(id)
       .then(() => {
         setBlogs(blogs.filter(blog => blog.id !== id))
-        setMessage({
-          content: `A blog ${newTitle} by ${newAuthor} removed`,
-          type: "success",
-        })
+        setMessage({ content: `Blog "${title}" deleted`, type: "success" })
+        setTimeout(() => setMessage(null), 5000)
+      })
+      .catch(error => {
+        console.error('Error deleting blog:', error)
+        setMessage({ content: `Error deleting blog "${title}"`, type: "error" })
+        setTimeout(() => setMessage(null), 5000)
       })
   }
-}
 
 if (user === null) {
   return (
@@ -204,7 +207,7 @@ return (
     <Notification message={message} />
 
     <h1>Bloglist</h1>
-    <BlogList blogs={[...blogs].sort((a,b) => b.likes - a.likes)} onVote={increaseVote} onDelete={deleteBlog} />
+    <BlogList blogs={[...blogs].sort((a,b) => b.likes - a.likes)} onVote={increaseVote} onDelete={deleteBlog} user={user}/>
   </div>
 )
 }
