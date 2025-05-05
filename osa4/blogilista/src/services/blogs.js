@@ -4,8 +4,8 @@ const baseUrl = '/api/blogs'
 let token = null
 
 const getAll = () => {
-    const request = axios.get(baseUrl)
-    return request.then(response => response.data)
+  const request = axios.get(baseUrl)
+  return request.then(response => response.data)
 }
 
 const create = nameObject => {
@@ -26,7 +26,7 @@ const remove = (id) => {
   const config = {
     headers: { Authorization: token },
   }
-  
+
   return axios.delete(`${baseUrl}/${id}`, config)
 }
 

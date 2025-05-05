@@ -1,32 +1,41 @@
 import { useState, forwardRef, useImperativeHandle } from 'react'
+import PropTypes from 'prop-types'
 
 const Togglable = forwardRef(({ buttonLabel, children }, ref) => {
   const [visible, setVisible] = useState(false)
 
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
-
   const toggleVisibility = () => {
-    setVisible(!visible)
+    setVisible(prevVisible => !prevVisible)
   }
 
-  useImperativeHandle(ref, () => {
-    return {
-      toggleVisibility,
-    }
-  })
+  useImperativeHandle(ref, () => ({
+    toggleVisibility
+  }))
 
   return (
     <div>
-      <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
-      </div>
-      <div style={showWhenVisible}>
-        {children}
-        <button onClick={toggleVisibility}>Cancel</button>
-      </div>
+      {!visible && (
+        <button onClick={toggleVisibility} aria-label="Show content">
+          {buttonLabel}
+        </button>
+      )}
+      {visible && (
+        <div>
+          {children}
+          <button onClick={toggleVisibility} aria-label="Hide content">
+            Cancel
+          </button>
+        </div>
+      )}
     </div>
   )
 })
+
+Togglable.displayName = 'Togglable'
+
+Togglable.propTypes = {
+  buttonLabel: PropTypes.string.isRequired,
+  children: PropTypes.node
+}
 
 export default Togglable
