@@ -1,6 +1,10 @@
-# esimerkkipalautusrepositorio
+# Submission repository for FullStack Open -course
 
-Eräs varsin toimiva hakemistorakenne palautusrepositoriolle on tässä esimerkkirepositoriossa käytetty tapa, jossa kutakin osaa kohti on oma hakemistonsa, joka vielä jakautuu tehtäväsarjat (kuten osan 1 unicafe) sisältäviin hakemistoihin:
+This course serves as an introduction to modern web application development with JavaScript. The main focus is on building single page applications with ReactJS that use REST APIs built with Node.js. The course also contains a section on GraphQL, a modern alternative to REST APIs.
+The course covers testing, configuration and environment management, the use of databases for storing the application’s data amongst other things.
+Course page: www.fullstackopen.com
+Apps and GitHub commits are in finnish. 
+
 
 ```
 osa0
@@ -13,4 +17,3 @@ osa2
   maiden_tiedot
 ```
 
-Hakemistoon kannattaa sijoittaa koko tehtäväsarjan react-projekti lukuunottamatta riippuvuuksia sisältävää hakemistoa <i>node\_modules</i>
