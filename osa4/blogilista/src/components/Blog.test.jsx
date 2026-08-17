@@ -99,3 +99,4 @@ test('calls event handler twice when the like button is clicked twice', async ()
   expect(mockHandler).toHaveBeenNthCalledWith(1, blog.id) // First call with blog id
   expect(mockHandler).toHaveBeenNthCalledWith(2, blog.id) // Second call with blog id, are they identical? 
 })
+
