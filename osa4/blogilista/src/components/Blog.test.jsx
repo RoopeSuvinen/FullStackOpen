@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import Blog from './Blog'
+import BlogForm from './BlogForm'
 
 test('Renders blog title', () => {
   const blog = {
@@ -100,3 +101,27 @@ test('calls event handler twice when the like button is clicked twice', async ()
   expect(mockHandler).toHaveBeenNthCalledWith(2, blog.id) // Second call with blog id, are they identical? 
 })
 
+test('calls createBlog with correct details when form is submitted', async () => {
+  const user = userEvent.setup()
+  const createBlog = vi.fn()
+
+  render(<BlogForm createBlog={createBlog} />)
+
+  const titleInput = screen.getByPlaceholderText('Title')
+  const authorInput = screen.getByPlaceholderText('Author')
+  const urlInput = screen.getByPlaceholderText('URL')
+  const submitButton = screen.getByRole('button', { name: 'Add blog' })
+
+  await user.type(titleInput, 'New Blog Title')
+  await user.type(authorInput, 'New Blog Author')
+  await user.type(urlInput, 'http://newblog.com')
+  await user.click(submitButton)
+
+  expect(createBlog).toHaveBeenCalledTimes(1)
+  expect(createBlog).toHaveBeenCalledWith({
+    title: 'New Blog Title',
+    author: 'New Blog Author',
+    url: 'http://newblog.com',
+    likes: 0,
+  })
+})
