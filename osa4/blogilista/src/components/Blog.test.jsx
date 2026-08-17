@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
-import Blog from './Blog'
 import userEvent from '@testing-library/user-event'
+import { vi } from 'vitest'
+import Blog from './Blog'
 
 test('Renders blog title', () => {
   const blog = {
@@ -63,4 +64,38 @@ test('Shows url, likes and user when view button is clicked', async () => {
   expect(screen.getByText(/http:\/\/testi.com/)).toBeInTheDocument()
   expect(screen.getByText(/Likes:/)).toBeInTheDocument()
   expect(screen.getByText(/Added by:/)).toBeInTheDocument()
+})
+
+test('calls event handler twice when the like button is clicked twice', async () => {
+  const blog = {
+    id: '1',
+    title: 'A blog',
+    author: 'Test Author',
+    url: 'http://example.com',
+    likes: 5,
+    user: {
+      id: 'user1',
+      username: 'tester',
+      name: 'Test Tester'
+    }
+  }
+
+  const user = {
+    id: 'user1',
+    username: 'tester',
+    name: 'Test Tester'
+  }
+
+  const mockHandler = vi.fn()
+  const userInter = userEvent.setup()
+
+  render(<Blog blog={blog} onVote={mockHandler} onDelete={() => {}} user={user} />)
+
+  await userInter.click(screen.getByRole('button', { name: 'view' }))
+  await userInter.click(screen.getByRole('button', { name: 'like' }))
+  await userInter.click(screen.getByRole('button', { name: 'like' }))
+
+  expect(mockHandler).toHaveBeenCalledTimes(2)
+  expect(mockHandler).toHaveBeenNthCalledWith(1, blog.id) // First call with blog id
+  expect(mockHandler).toHaveBeenNthCalledWith(2, blog.id) // Second call with blog id, are they identical? 
 })
