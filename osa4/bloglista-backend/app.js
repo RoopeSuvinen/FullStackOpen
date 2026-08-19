@@ -8,6 +8,8 @@ const logger = require('./utils/logger')
 const mongoose = require('mongoose')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
+const User = require('./models/user')
+const Blog = require('./models/blog')
 require('dotenv').config()
 
 mongoose.set('strictQuery', false)
@@ -25,6 +27,13 @@ mongoose.connect(config.MONGODB_URI)
 app.use(cors())
 app.use(express.static('dist'))
 app.use(express.json())
+
+app.post('/api/testing/reset', async (request, response) => {
+  await User.deleteMany({})
+  await Blog.deleteMany({})
+  response.status(204).end()
+})
+
 app.use(middleware.requestLogger)
 app.use(middleware.tokenExtractor)
 
