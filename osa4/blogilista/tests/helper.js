@@ -13,4 +13,4 @@ const createBlog = async (page, title, author, url) => {
   await page.getByText(title, { exact: true }).waitFor()
 }
 
-export = { loginWith, createBlog }
+module.exports = { loginWith, createBlog }

@@ -69,5 +69,28 @@ describe('Blog app', () => {
 
       await expect(blog).not.toBeVisible()
     })
+
+    test('only the user who added the blog sees the delete button', async ({ page, request }) => {
+      await request.post('http://127.0.0.1:3003/api/users', { // Luodaan toinen käyttäjä, jolla tarkistetaan, että muut eivät näe toisen muodostaman blogin poisto-nappia.
+        data: {
+          name: 'Matti Meikäläinen', 
+          username: 'mattimeika',
+          password: 'secret'
+        }
+      })
+
+      await loginWith(page, 'roopesuvi', 'secret')
+      await createBlog(page, 'Roopen blogi', 'Roope Suvinen', 'https://example.com/roopenblogi')
+      await page.getByRole('button', { name: 'Logout' }).click()
+      await loginWith(page, 'mattimeika', 'secret')
+
+      await expect(page.getByText('Matti Meikäläinen logged in')).toBeVisible()
+      await page.reload()
+
+      const blog = page.locator('.blog-card').filter({ hasText: 'Roopen blogi' })
+      await blog.getByRole('button', { name: 'View' }).click()
+
+      await expect(blog.getByRole('button', { name: 'Delete' })).not.toBeVisible()
+    })
   })
 })
