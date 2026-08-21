@@ -92,5 +92,32 @@ describe('Blog app', () => {
 
       await expect(blog.getByRole('button', { name: 'Delete' })).not.toBeVisible()
     })
+
+    test('blogs are ordered by likes', async ({ page }) => {
+      await loginWith(page, 'roopesuvi', 'secret') 
+      await createBlog(page, 'First blog', 'Roope Suvinen', 'https://example.com/first')
+      await createBlog(page, 'Second blog', 'Roope Suvinen', 'https://example.com/second')
+      await createBlog(page, 'Third blog', 'Roope Suvinen', 'https://example.com/third')
+
+      const firstBlog = page.locator('.blog-card').filter({ hasText: 'First blog' })
+      const secondBlog = page.locator('.blog-card').filter({ hasText: 'Second blog' })
+      const thirdBlog = page.locator('.blog-card').filter({ hasText: 'Third blog' })
+
+      await firstBlog.getByRole('button', { name: 'View' }).click()
+      await firstBlog.getByRole('button', { name: 'like' }).click()
+
+      await secondBlog.getByRole('button', { name: 'View' }).click()
+      await secondBlog.getByRole('button', { name: 'like' }).click()
+      await secondBlog.getByRole('button', { name: 'like' }).click()
+
+      await thirdBlog.getByRole('button', { name: 'View' }).click()
+      await thirdBlog.getByRole('button', { name: 'like' }).click()
+      await thirdBlog.getByRole('button', { name: 'like' }).click()
+      await thirdBlog.getByRole('button', { name: 'like' }).click()
+
+      await expect(page.locator('.blog-card').nth(0)).toContainText('Third blog')
+      await expect(page.locator('.blog-card').nth(1)).toContainText('Second blog')
+      await expect(page.locator('.blog-card').nth(2)).toContainText('First blog')
+    })
   })
 })
