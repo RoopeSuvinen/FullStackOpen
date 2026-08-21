@@ -72,5 +72,26 @@ describe('Blog app', () => {
 
       await expect(page.getByText('Likes: 1')).toBeVisible()
     })
+
+    test('a blog can be deleted', async({ page }) => {
+      await page.getByRole('textbox').nth(0).fill('roopesuvi')
+      await page.getByRole('textbox').nth(1).fill('secret')
+      await page.getByRole('button', { name: 'login' }).click()
+
+      await page.getByRole('button', { name: 'Show content' }).click()
+      await page.getByPlaceholder('Title').fill('Poistettava blogi')
+      await page.getByPlaceholder('Author').fill('Roope Suvinen')
+      await page.getByPlaceholder('URL').fill('https://example.com/poistettava')
+      await page.getByRole('button', { name: 'Add blog' }).click()
+
+      const blog = page.getByText('Poistettava blogi', { exact: true })
+      await expect(blog).toBeVisible()
+      await page.getByRole('button', { name: 'View' }).click()
+
+      page.once('dialog', dialog => dialog.accept())
+      await page.getByRole('button', { name: 'Delete' }).click()
+
+      await expect(blog).not.toBeVisible()
+    })
   })
 })
