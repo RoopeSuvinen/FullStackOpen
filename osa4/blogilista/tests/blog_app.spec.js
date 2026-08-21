@@ -54,5 +54,23 @@ describe('Blog app', () => {
       await expect(page.getByText('Testiblogi', { exact: true })).toBeVisible()
       await expect(page.getByText('A new blog "Testiblogi" by Roope Suvinen added')).toBeVisible()
     })
+
+    test('a blog can be liked', async ({ page }) => {
+      await page.getByRole('textbox').nth(0).fill('roopesuvi')
+      await page.getByRole('textbox').nth(1).fill('secret')
+      await page.getByRole('button', { name: 'login' }).click()
+
+      await page.getByRole('button', { name: 'Show content' }).click()
+      await page.getByPlaceholder('Title').fill('Likeable blog')
+      await page.getByPlaceholder('Author').fill('Roope Suvinen')
+      await page.getByPlaceholder('URL').fill('https://example.com/likeable')
+      await page.getByRole('button', { name: 'Add blog' }).click()
+
+      await page.getByRole('button', { name: 'View' }).click()
+      const likeButton = page.getByRole('button', { name: 'like' })
+      await likeButton.click()
+
+      await expect(page.getByText('Likes: 1')).toBeVisible()
+    })
   })
 })
