@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 const Blog = ({ blog, onVote, onDelete, user }) => {
   console.log('Logged-in user:', user)
@@ -17,7 +18,9 @@ const Blog = ({ blog, onVote, onDelete, user }) => {
   return (
     <div className="blog-card">
       <div>
-        <span className="blog-title">{blog.title}</span>
+        <Link className="blog-title" to={`/blogs/${blog.id}`}>
+          {blog.title}
+        </Link>
         <span className="blog-author"> {blog.author}</span>
         <button onClick={toggleVisibility}>
           {visible ? 'hide' : 'view'}
@@ -34,7 +37,7 @@ const Blog = ({ blog, onVote, onDelete, user }) => {
           </p>
           <p>
             <strong>Likes:</strong> {blog.likes}
-            <button onClick={() => onVote(blog.id)}>like</button>
+            {user && <button onClick={() => onVote(blog.id)}>like</button>}
           </p>
           <p>
             <strong>Added by:</strong> {blog.user?.name || 'Unknown'}

@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
+import { BrowserRouter } from 'react-router-dom'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
 
@@ -24,7 +25,11 @@ test('Renders blog title', () => {
     name: 'Test Tester'
   }
 
-  render(<Blog blog={blog} onVote={() => {}} onDelete={() => {}} user={user} />)
+  render(
+    <BrowserRouter>
+      <Blog blog={blog} onVote={() => {}} onDelete={() => {}} user={user} />
+    </BrowserRouter>
+  )
 
   // Checks that blog title renders.
   const element = screen.getByText(/Component testing is done with react-testing-library/i)
@@ -51,7 +56,11 @@ test('Shows url, likes and user when view button is clicked', async () => {
     name: 'Matti Meikäläinen'
   }
 
-  render(<Blog blog={blog} onVote={() => {}} onDelete={() => {}} user={user} />)
+  render(
+    <BrowserRouter>
+      <Blog blog={blog} onVote={() => {}} onDelete={() => {}} user={user} />
+    </BrowserRouter>
+  )
 
   // Initially, url and likes should not be visible
   expect(screen.queryByText(/http:\/\/testi.com/)).not.toBeInTheDocument()
@@ -90,7 +99,11 @@ test('calls event handler twice when the like button is clicked twice', async ()
   const mockHandler = vi.fn()
   const userInter = userEvent.setup()
 
-  render(<Blog blog={blog} onVote={mockHandler} onDelete={() => {}} user={user} />)
+  render(
+    <BrowserRouter>
+      <Blog blog={blog} onVote={mockHandler} onDelete={() => {}} user={user} />
+    </BrowserRouter>
+  )
 
   await userInter.click(screen.getByRole('button', { name: 'view' }))
   await userInter.click(screen.getByRole('button', { name: 'like' }))

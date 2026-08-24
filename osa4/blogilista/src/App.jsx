@@ -6,6 +6,7 @@ import './index.css'
 import Togglable from './components/Togglable'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
+import BlogView from './components/BlogView'
 
 const Notification = ({ message }) => {
   if (!message || !message.content) {
@@ -193,6 +194,9 @@ function App() {
       </nav>
 
       <Routes>
+        <Route path="/blogs/:id" element={
+          <BlogView blogs={blogs} onVote={increaseVote} onDelete={deleteBlog} user={user} />
+        } />
         <Route path="/" element={
           <BlogList
             blogs={[...blogs].sort((a, b) => b.likes - a.likes)}
