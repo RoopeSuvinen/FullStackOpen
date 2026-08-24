@@ -6,7 +6,7 @@ const BlogList = ({ blogs, onVote, onDelete, user }) => {
     <ul className="blog-list">
       {blogs.map((blog) => (
         <li key={blog.id}>
-          <Blog blog={blog} onVote={onVote} onDelete={onDelete} user={user} />
+          <Blog blog={blog} />
         </li>
       ))}
     </ul>

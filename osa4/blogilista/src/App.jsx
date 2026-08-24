@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, Route, Routes, useNavigate } from 'react-router-dom'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
-import Togglable from './components/Togglable'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import BlogView from './components/BlogView'
@@ -29,9 +28,7 @@ function App() {
 
   // Hooks for new blogpost information
   const navigate = useNavigate()
-  const blogFormRef = useRef()
   const [blogs, setBlogs] = useState([])
-  const [votes, setVotes] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -45,7 +42,6 @@ function App() {
       .then(blogPosts => {
         console.log(blogPosts)
         setBlogs(blogPosts)
-        setVotes(blogPosts.map(() => 0))
       })
       .catch(error => {
         console.error('Error fetching blogs', error)
@@ -152,11 +148,9 @@ function App() {
       }
 
       setBlogs(blogs.concat(blogWithUser))
-      setVotes(votes.concat(0))
       setMessage({ content: `A new blog "${returnedBlog.title}" by ${returnedBlog.author} added`, type: 'success' })
       setTimeout(() => setMessage(null), 5000)
-
-      blogFormRef.current.toggleVisibility()
+      navigate('/')
     }).catch(error => {
       console.error('Error adding blog:', error)
     })
@@ -171,6 +165,7 @@ function App() {
         setBlogs(blogs.filter(blog => blog.id !== id))
         setMessage({ content: `Blog "${title}" deleted`, type: 'success' })
         setTimeout(() => setMessage(null), 5000)
+        navigate('/')
       })
       .catch(error => {
         console.error('Error deleting blog:', error)
@@ -188,6 +183,7 @@ function App() {
         ) : (
           <>
             <span>{user.name} logged in</span>{' '}
+            <Link to="/newblog">new blog</Link>{' '}
             <button onClick={handleLogout}>Logout</button>
           </>
         )}
@@ -230,6 +226,7 @@ function App() {
             </form>
           </div>
         } />
+        <Route path="/newblog" element={<BlogForm createBlog={addBlog} />} />
       </Routes>
     </div>
   )

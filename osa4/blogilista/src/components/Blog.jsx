@@ -1,53 +1,11 @@
-import { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-const Blog = ({ blog, onVote, onDelete, user }) => {
-  console.log('Logged-in user:', user)
-  console.log('Blog user:', blog.user)
-
-  const [visible, setVisible] = useState(false)
-
-  const toggleVisibility = () => {
-    setVisible(!visible)
-  }
-
-  const showRemoveButton =
-    user?.username && (blog.user?.username === user.username || blog.user?.id === user.id)
-
+const Blog = ({ blog }) => {
   return (
-    <div className="blog-card">
-      <div>
-        <Link className="blog-title" to={`/blogs/${blog.id}`}>
-          {blog.title}
-        </Link>
-        <span className="blog-author"> {blog.author}</span>
-        <button onClick={toggleVisibility}>
-          {visible ? 'hide' : 'view'}
-        </button>
-      </div>
-
-      {visible && (
-        <div>
-          <p className="blog-url">
-            <strong>URL:</strong>{' '}
-            <a href={blog.url} target="_blank" rel="noopener noreferrer">
-              {blog.url}
-            </a>
-          </p>
-          <p>
-            <strong>Likes:</strong> {blog.likes}
-            {user && <button onClick={() => onVote(blog.id)}>like</button>}
-          </p>
-          <p>
-            <strong>Added by:</strong> {blog.user?.name || 'Unknown'}
-          </p>
-          {showRemoveButton && (
-            <button onClick={() => onDelete(blog.id, blog.title)}>Delete</button>
-          )}
-        </div>
-      )}
-    </div>
+    <Link className="blog-title" to={`/blogs/${blog.id}`}>
+      {blog.title}
+    </Link>
   )
 }
 
@@ -64,17 +22,6 @@ Blog.propTypes = {
       name: PropTypes.string,
     }),
   }).isRequired,
-  onVote: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  user: PropTypes.shape({
-    id: PropTypes.string,
-    username: PropTypes.string,
-    name: PropTypes.string,
-  }),
-}
-
-Blog.defaultProps = {
-  user: null, // If no user is provided, default to null
 }
 
 export default Blog

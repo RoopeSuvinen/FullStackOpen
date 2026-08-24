@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
 
-test('Renders blog title', () => {
+test('Renders blog title as a link', () => {
   const blog = {
     id: '1',
     title: 'Component testing is done with react-testing-library',
@@ -27,91 +27,17 @@ test('Renders blog title', () => {
 
   render(
     <BrowserRouter>
-      <Blog blog={blog} onVote={() => {}} onDelete={() => {}} user={user} />
+      <Blog blog={blog} />
     </BrowserRouter>
   )
 
   // Checks that blog title renders.
-  const element = screen.getByText(/Component testing is done with react-testing-library/i)
-  expect(element).toBeDefined()
-})
-
-test('Shows url, likes and user when view button is clicked', async () => {
-  const blog = {
-    id: '1',
-    title: 'Testiblogi',
-    author: 'Testikirjoittaja',
-    url: 'http://testi.com',
-    likes: 5,
-    user: {
-      id: 'user1',
-      username: 'MasaMainio',
-      name: 'Matti Meikäläinen'
-    }
-  }
-
-  const user = {
-    id: 'user1',
-    username: 'MasaMainio',
-    name: 'Matti Meikäläinen'
-  }
-
-  render(
-    <BrowserRouter>
-      <Blog blog={blog} onVote={() => {}} onDelete={() => {}} user={user} />
-    </BrowserRouter>
-  )
-
-  // Initially, url and likes should not be visible
-  expect(screen.queryByText(/http:\/\/testi.com/)).not.toBeInTheDocument()
-  expect(screen.queryByText(/Likes:/)).not.toBeInTheDocument()
-
-  // Click the view button
-  const viewButton = screen.getByRole('button', { name: 'view' })
-  await userEvent.click(viewButton)
-
-  // Now url, likes and user should be visible
-  expect(screen.getByText(/http:\/\/testi.com/)).toBeInTheDocument()
-  expect(screen.getByText(/Likes:/)).toBeInTheDocument()
-  expect(screen.getByText(/Added by:/)).toBeInTheDocument()
-})
-
-test('calls event handler twice when the like button is clicked twice', async () => {
-  const blog = {
-    id: '1',
-    title: 'A blog',
-    author: 'Test Author',
-    url: 'http://example.com',
-    likes: 5,
-    user: {
-      id: 'user1',
-      username: 'tester',
-      name: 'Test Tester'
-    }
-  }
-
-  const user = {
-    id: 'user1',
-    username: 'tester',
-    name: 'Test Tester'
-  }
-
-  const mockHandler = vi.fn()
-  const userInter = userEvent.setup()
-
-  render(
-    <BrowserRouter>
-      <Blog blog={blog} onVote={mockHandler} onDelete={() => {}} user={user} />
-    </BrowserRouter>
-  )
-
-  await userInter.click(screen.getByRole('button', { name: 'view' }))
-  await userInter.click(screen.getByRole('button', { name: 'like' }))
-  await userInter.click(screen.getByRole('button', { name: 'like' }))
-
-  expect(mockHandler).toHaveBeenCalledTimes(2)
-  expect(mockHandler).toHaveBeenNthCalledWith(1, blog.id) // First call with blog id
-  expect(mockHandler).toHaveBeenNthCalledWith(2, blog.id) // Second call with blog id, are they identical? 
+  const element = screen.getByRole('link', {
+    name: 'Component testing is done with react-testing-library'
+  })
+  expect(element).toHaveAttribute('href', '/blogs/1')
+  expect(screen.queryByRole('button', { name: 'view' })).not.toBeInTheDocument()
+  expect(screen.queryByText('Test Author')).not.toBeInTheDocument()
 })
 
 test('calls createBlog with correct details when form is submitted', async () => {
