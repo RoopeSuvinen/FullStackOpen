@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link, Route, Routes, useNavigate } from 'react-router-dom'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
@@ -26,6 +27,7 @@ const Notification = ({ message }) => {
 function App() {
 
   // Hooks for new blogpost information
+  const navigate = useNavigate()
   const blogFormRef = useRef()
   const [blogs, setBlogs] = useState([])
   const [votes, setVotes] = useState([])
@@ -77,6 +79,7 @@ function App() {
       setUser(user)
       setUsername('')
       setPassword('')
+      navigate('/')
     } catch (exception) {
       console.error('Login failed', exception)
       setMessage({
@@ -94,6 +97,7 @@ function App() {
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
     blogService.setToken(null)
+    navigate('/')
   }
 
   // Adds vote for blog
@@ -174,40 +178,55 @@ function App() {
       })
   }
 
-  if (user === null) {
-    return (
-      <div>
-        <h2>Log in to application</h2>
-        <Notification message={message} />
-        <form onSubmit={handleLogin}>
-          <div>
-            username <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)}/>
-          </div>
-          <div>
-            password <input type="text" value={password} name="Password" onChange={({ target }) => setPassword(target.value)}/>
-          </div>
-          <div>
-            <button type="submit">login</button>
-          </div>
-        </form>
-      </div>
-    )
-  }
-
   return (
     <div>
-      <p> {user.name} logged in </p>
-      <button onClick={handleLogout}>Logout</button>
+      <nav>
+        <Link to="/">blogs</Link>{' '}
+        {user === null ? (
+          <Link to="/login">login</Link>
+        ) : (
+          <>
+            <span>{user.name} logged in</span>{' '}
+            <button onClick={handleLogout}>Logout</button>
+          </>
+        )}
+      </nav>
 
-      <h1>Add new blog</h1>
-      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-        <BlogForm createBlog={addBlog} />
-      </Togglable>
-
-      <Notification message={message} />
-
-      <h1>Bloglist</h1>
-      <BlogList blogs={[...blogs].sort((a,b) => b.likes - a.likes)} onVote={increaseVote} onDelete={deleteBlog} user={user}/>
+      <Routes>
+        <Route path="/" element={
+          <BlogList
+            blogs={[...blogs].sort((a, b) => b.likes - a.likes)}
+            onVote={increaseVote}
+            onDelete={deleteBlog}
+            user={user}
+          />
+        } />
+        <Route path="/blogs" element={
+          <BlogList
+            blogs={[...blogs].sort((a, b) => b.likes - a.likes)}
+            onVote={increaseVote}
+            onDelete={deleteBlog}
+            user={user}
+          />
+        } />
+        <Route path="/login" element={
+          <div>
+            <h2>Log in to application</h2>
+            <Notification message={message} />
+            <form onSubmit={handleLogin}>
+              <div>
+                username <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)}/>
+              </div>
+              <div>
+                password <input type="text" value={password} name="Password" onChange={({ target }) => setPassword(target.value)}/>
+              </div>
+              <div>
+                <button type="submit">login</button>
+              </div>
+            </form>
+          </div>
+        } />
+      </Routes>
     </div>
   )
 }
