@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Box, Button, Stack, TextField, Typography } from '@mui/material'
 
 const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('')
@@ -16,21 +17,40 @@ const BlogForm = ({ createBlog }) => {
   }
 
   return (
-    <div>
-      <h2>Create a new blog</h2>
-      <form onSubmit={addBlog}>
-        <div>
-          Title: <input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-        </div>
-        <div>
-          Author: <input placeholder="Author" value={author} onChange={(e) => setAuthor(e.target.value)} />
-        </div>
-        <div>
-          URL: <input placeholder="URL" value={url} onChange={(e) => setUrl(e.target.value)} />
-        </div>
-        <button type="submit">Add blog</button>
-      </form>
-    </div>
+    <Box className="new-blog-page">
+      <Stack className="new-blog-form" component="form" onSubmit={addBlog} spacing={2}>
+        <Typography variant="h5" component="h2">
+          Create a new blog
+        </Typography>
+        <TextField
+          label="Title"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          fullWidth
+          size="small"
+        />
+        <TextField
+          label="Author"
+          placeholder="Author"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+          fullWidth
+          size="small"
+        />
+        <TextField
+          label="URL"
+          placeholder="URL"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          fullWidth
+          size="small"
+        />
+        <Button type="submit" variant="contained" sx={{ alignSelf: 'flex-start' }}>
+          Add blog
+        </Button>
+      </Stack>
+    </Box>
   )
 }
 

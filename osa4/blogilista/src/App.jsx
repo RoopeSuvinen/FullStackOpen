@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, Route, Routes, useNavigate } from 'react-router-dom'
+import { Box, Button, Stack, TextField, Typography } from '@mui/material'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
@@ -177,14 +178,16 @@ function App() {
   return (
     <div>
       <nav>
-        <Link to="/">blogs</Link>{' '}
+        <Link to="/">blogs</Link>
         {user === null ? (
           <Link to="/login">login</Link>
         ) : (
           <>
-            <span>{user.name} logged in</span>{' '}
-            <Link to="/newblog">new blog</Link>{' '}
-            <button onClick={handleLogout}>Logout</button>
+            <Link to="/newblog">new blog</Link>
+            <div className="nav-user">
+              <span>{user.name} logged in</span>{' '}
+              <button onClick={handleLogout}>Logout</button>
+            </div>
           </>
         )}
       </nav>
@@ -210,21 +213,35 @@ function App() {
           />
         } />
         <Route path="/login" element={
-          <div>
-            <h2>Log in to application</h2>
-            <Notification message={message} />
-            <form onSubmit={handleLogin}>
-              <div>
-                username <input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)}/>
-              </div>
-              <div>
-                password <input type="text" value={password} name="Password" onChange={({ target }) => setPassword(target.value)}/>
-              </div>
-              <div>
-                <button type="submit">login</button>
-              </div>
-            </form>
-          </div>
+          <Box className="login-page">
+            <Stack className="login-form" component="form" onSubmit={handleLogin} spacing={2}>
+              <Typography variant="h5" component="h2">
+                Log in to application
+              </Typography>
+              <Notification message={message} />
+              <TextField
+                label="username"
+                type="text"
+                value={username}
+                name="Username"
+                onChange={({ target }) => setUsername(target.value)}
+                fullWidth
+                size="small"
+              />
+              <TextField
+                label="password"
+                type="password"
+                value={password}
+                name="Password"
+                onChange={({ target }) => setPassword(target.value)}
+                fullWidth
+                size="small"
+              />
+              <Button type="submit" variant="contained" sx={{ alignSelf: 'flex-start' }}>
+                LOGIN
+              </Button>
+            </Stack>
+          </Box>
         } />
         <Route path="/newblog" element={<BlogForm createBlog={addBlog} />} />
       </Routes>

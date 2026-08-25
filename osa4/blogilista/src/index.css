@@ -1,4 +1,37 @@
 /* Yleinen lista-container */
+nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  padding-top: 24px;
+}
+
+.login-form {
+  width: min(100%, 320px);
+}
+
+.new-blog-page {
+  display: flex;
+  justify-content: center;
+  padding-top: 24px;
+}
+
+.new-blog-form {
+  width: min(100%, 420px);
+}
+
 .blog-list {
   display: flex;
   flex-direction: column;

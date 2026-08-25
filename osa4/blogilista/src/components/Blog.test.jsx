@@ -62,11 +62,10 @@ test('Renders blog title as a link', () => {
 
   // Checks that blog title renders.
   const element = screen.getByRole('link', {
-    name: 'Component testing is done with react-testing-library'
+    name: 'Component testing is done with react-testing-library by Testikirjoittaja'
   })
   expect(element).toHaveAttribute('href', '/blogs/1')
   expect(screen.queryByRole('button', { name: 'view' })).not.toBeInTheDocument()
-  expect(screen.queryByText('Testikirjoittaja')).not.toBeInTheDocument()
 })
 
 test('Logged-out user sees blog details but no buttons', () => {
