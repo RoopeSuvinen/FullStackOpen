@@ -1,15 +1,13 @@
 /* Yleinen lista-container */
-nav {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
 .nav-user {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-left: auto;
+  gap: 8px;
+}
+
+.notification-container {
+  margin: 14px auto 0;
+  max-width: 920px;
 }
 
 .login-page {

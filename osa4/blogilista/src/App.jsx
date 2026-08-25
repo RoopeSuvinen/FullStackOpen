@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react'
 import { Link, Route, Routes, useNavigate } from 'react-router-dom'
-import { Box, Button, Stack, TextField, Typography } from '@mui/material'
+import {
+  Alert,
+  AppBar,
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Toolbar,
+  Typography,
+} from '@mui/material'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
@@ -13,17 +22,11 @@ const Notification = ({ message }) => {
     return null
   }
 
-  const style = {
-    color: message.type === 'error' ? 'red' : 'green',
-    background: 'lightgrey',
-    fontSize: '20px',
-    borderStyle: 'solid',
-    borderRadius: '5px',
-    padding: '10px',
-    marginBottom: '10px',
-  }
-
-  return <div style={style}>{message.content}</div>
+  return (
+    <Alert severity={message.type === 'error' ? 'error' : 'success'}>
+      {message.content}
+    </Alert>
+  )
 }
 function App() {
 
@@ -177,20 +180,34 @@ function App() {
 
   return (
     <div>
-      <nav>
-        <Link to="/">blogs</Link>
-        {user === null ? (
-          <Link to="/login">login</Link>
-        ) : (
-          <>
-            <Link to="/newblog">new blog</Link>
-            <div className="nav-user">
-              <span>{user.name} logged in</span>{' '}
-              <button onClick={handleLogout}>Logout</button>
-            </div>
-          </>
-        )}
-      </nav>
+      <AppBar position="static" component="nav">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Blog App
+          </Typography>
+          <Button color="inherit" component={Link} to="/">
+            BLOGS
+          </Button>
+          {user === null ? (
+            <Button color="inherit" component={Link} to="/login">
+              LOGIN
+            </Button>
+          ) : (
+            <Box className="nav-user">
+              <Button color="inherit" component={Link} to="/newblog">
+                NEW BLOG
+              </Button>
+              <Button color="inherit" onClick={handleLogout}>
+                LOGOUT
+              </Button>
+            </Box>
+          )}
+        </Toolbar>
+      </AppBar>
+
+      <Box className="notification-container">
+        <Notification message={message} />
+      </Box>
 
       <Routes>
         <Route path="/blogs/:id" element={
@@ -218,7 +235,6 @@ function App() {
               <Typography variant="h5" component="h2">
                 Log in to application
               </Typography>
-              <Notification message={message} />
               <TextField
                 label="username"
                 type="text"
