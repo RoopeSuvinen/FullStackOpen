@@ -13,7 +13,7 @@ const BlogList = ({ blogs, onVote, onDelete, user }) => {
   )
 }
 
-BlogList.PropTypes = {
+BlogList.propTypes = {
   blogs: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,

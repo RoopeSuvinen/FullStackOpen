@@ -1,33 +1,62 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom'
 import Blog from './Blog'
 import BlogForm from './BlogForm'
+import BlogView from './BlogView'
 
-test('Renders blog title as a link', () => {
-  const blog = {
-    id: '1',
-    title: 'Component testing is done with react-testing-library',
-    author: 'Test Author',
-    url: 'http://example.com',
-    likes: 5,
-    user: {
-      id: 'user1',
-      username: 'tester',
-      name: 'Test Tester'
-    }
-  }
-
-  const user = {
+const blog = {
+  id: '1',
+  title: 'Testiblogi',
+  author: 'Testikirjoittaja',
+  url: 'http://testi.com',
+  likes: 5,
+  user: {
     id: 'user1',
     username: 'tester',
-    name: 'Test Tester'
-  }
+    name: 'Testaaja',
+  },
+}
+
+const blogOwner = {
+  id: 'user1',
+  username: 'tester',
+  name: 'Testaaja',
+}
+
+const anotherUser = {
+  id: 'user2',
+  username: 'anotheruser',
+  name: 'Toinen Käyttäjä',
+}
+
+const renderBlogView = (user = null) => {
+  render(
+    <MemoryRouter initialEntries={['/blogs/1']}>
+      <Routes>
+        <Route
+          path="/blogs/:id"
+          element={
+            <BlogView
+              blogs={[blog]}
+              onVote={vi.fn()}
+              onDelete={vi.fn()}
+              user={user}
+            />
+          }
+        />
+      </Routes>
+    </MemoryRouter>
+  )
+}
+
+test('Renders blog title as a link', () => {
+  const listBlog = { ...blog, title: 'Component testing is done with react-testing-library' }
 
   render(
     <BrowserRouter>
-      <Blog blog={blog} />
+      <Blog blog={listBlog} />
     </BrowserRouter>
   )
 
@@ -37,7 +66,31 @@ test('Renders blog title as a link', () => {
   })
   expect(element).toHaveAttribute('href', '/blogs/1')
   expect(screen.queryByRole('button', { name: 'view' })).not.toBeInTheDocument()
-  expect(screen.queryByText('Test Author')).not.toBeInTheDocument()
+  expect(screen.queryByText('Testikirjoittaja')).not.toBeInTheDocument()
+})
+
+test('Logged-out user sees blog details but no buttons', () => {
+  renderBlogView()
+
+  expect(screen.getByRole('heading', { name: 'Testiblogi' })).toBeInTheDocument()
+  expect(screen.getByText('http://testi.com')).toBeInTheDocument()
+  expect(screen.getByText('likes 5')).toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'like' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'remove' })).not.toBeInTheDocument()
+})
+
+test('Non-owner sees only the like button', () => {
+  renderBlogView(anotherUser)
+
+  expect(screen.getByRole('button', { name: 'like' })).toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: 'remove' })).not.toBeInTheDocument()
+})
+
+test('Blog owner sees both like and remove buttons', () => {
+  renderBlogView(blogOwner)
+
+  expect(screen.getByRole('button', { name: 'like' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'remove' })).toBeInTheDocument()
 })
 
 test('calls createBlog with correct details when form is submitted', async () => {
