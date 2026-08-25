@@ -3,13 +3,16 @@ import PropTypes from 'prop-types'
 
 const BlogList = ({ blogs, onVote, onDelete, user }) => {
   return (
-    <ul className="blog-list">
-      {blogs.map((blog) => (
-        <li key={blog.id}>
-          <Blog blog={blog} />
-        </li>
-      ))}
-    </ul>
+    <div className="blog-list-container">
+      <h2>Blogs</h2>
+      <ul className="blog-list">
+        {blogs.map((blog) => (
+          <li className="blog-list-item" key={blog.id}>
+            <Blog blog={blog} />
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 

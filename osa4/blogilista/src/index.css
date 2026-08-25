@@ -30,10 +30,42 @@
   width: min(100%, 420px);
 }
 
+.blog-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 32px auto;
+  max-width: 720px;
+  padding: 0 24px;
+}
+
+.blog-view-title {
+  font-weight: 700;
+}
+
+.blog-view-url {
+  overflow-wrap: anywhere;
+}
+
 .blog-list {
   display: flex;
   flex-direction: column;
-  gap: 6px; /* Välit laatikoiden välillä */
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+.blog-list-item {
+  background-color: #cfe5f7;
+  border: 1px solid #d9e2ec;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+  padding: 12px 16px;
+}
+
+.blog-view-details {
+  color: #6b7280;
 }
 
 /* Yksittäinen blogikortti */
